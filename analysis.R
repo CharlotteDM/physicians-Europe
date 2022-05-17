@@ -37,10 +37,19 @@ pal_phys <- colorFactor(palette = "Paired", domain = phys_data[["med_spec"]])
 
 #creates map
 leaflet(data = phys_data) %>%
-  addProviderTiles("Esri.NatGeoWorldMap") %>%
+  addProviderTiles("Stamen.TonerLite") %>%
   addCircleMarkers(
     lat = ~lat,
-    long = ~long,
-    label = ~pasteO(med-spec, ",", number),
-    color = 
-  )
+    lng = ~long,
+    label = ~paste(med_spec, ",", OBS_VALUE),
+    color = pal_phys(phys_data[["med_spec"]]),
+    fillOpacity = .7,
+    radius = 4,
+    stroke = F) %>%
+  addLegend(
+    position = "bottomright",
+    title = "Medical specialization",
+    pal = pal_phys,
+    values = phys_data[["med_spec"]],
+    opacity = .5)
+  
