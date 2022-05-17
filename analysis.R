@@ -53,3 +53,17 @@ leaflet(data = phys_data) %>%
     values = phys_data[["med_spec"]],
     opacity = .5)
   
+
+#number of doctors in a given specialization
+
+table <- phys_data %>%
+  group_by(phys_data[["med_spec"]]) %>%
+  arrange(-OBS_VALUE) 
+
+table <- select(table, med_spec, OBS_VALUE, TIME_PERIOD, Country)
+
+#removes column
+table <- subset( table, select = -1 )
+
+#new names of columns
+  colnames(table) <- c("spec", "number", "year", "country")
