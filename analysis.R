@@ -32,9 +32,15 @@ phys_data <- left_join(physEurope, long_lat, by = "geo")
 names(phys_data)[names(phys_data) == 'Latitude..average.'] <- 'lat'
 names(phys_data)[names(phys_data) == 'Longitude..average.'] <- 'long'
 
+#colors
+pal_phys <- colorFactor(palette = "Paired", domain = phys_data[["med_spec"]])
+
 #creates map
 leaflet(data = phys_data) %>%
   addProviderTiles("Esri.NatGeoWorldMap") %>%
   addCircleMarkers(
-    lat = ~latitude..average.
+    lat = ~lat,
+    long = ~long,
+    label = ~pasteO(med-spec, ",", number),
+    color = 
   )
