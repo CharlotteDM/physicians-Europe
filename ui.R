@@ -14,6 +14,7 @@ library("shinyWidgets")
 #install.packages("shinythemes")
 library("shinythemes")
 
+
 ##uncomment to set working directory of RStudio - only for local
 #path <- dirname(rstudioapi::getActiveDocumentContext()$path)
 #setwd(path)
@@ -53,20 +54,29 @@ pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 #application interface
 ui <- fluidPage(
   titlePanel("Physicians by medical specialization"),
-  theme = shinytheme("slate"),
+  theme = shinytheme("sandstone"),
   sidebarLayout(
     sidebarPanel(
       selectInput(
         inputId = "analysis_var",
         label = "Specialization:",
-        choices = unique(phys_data$spec))),
+        choices = unique(phys_data$spec)),
+      selectInput(
+        inputId = "analysis_var",
+        label = "Year:",
+        choices = 1985:2020),
+      selectInput(
+        inputId = "analysis_var",
+        label = "Country:",
+        choices = unique(phys_data$Country),
+      )),
         mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
           tabsetPanel(
             tabPanel("Map", leafletOutput("phys_map")), 
             tabPanel("Table", tableOutput("phys_table")),
-            tabPanel("Plot", plotOutput("phys_plot"))
+            tabPanel("Plot", tableOutput("phys_plot"))
           )
         )
       )
@@ -81,10 +91,10 @@ phys_table <- phys_data %>%
 
     
 #refine code
-server <- function(input, output) {
+server <- function (input, output) {
   output$phys_map <- renderLeaflet({
     pal_phys <- colorFactor(
-      palette = "Dark2",
+      palette = "Set3",
       domain = phys_data[[input$analysis_var]]
     )
     leaflet(data = phys_data) %>%
@@ -104,6 +114,22 @@ server <- function(input, output) {
         pal = pal_phys,
         values = ~phys_data[[input$analysis_var]],
         opacity = .5)
+  })
+  phys_data_filtered <- reactive({
+    phys_data[phys_data$year %in% input$analysis_var, ]
+  })  
+  phys_data_filtered <- reactive({
+    phys_data[phys_data$year %in% input$analysis_var, ]
+  })
+  phys_data_filtered <- reactive({
+    phys_data[phys_data$Country %in% input$analysis_var, ]
+  })
+
+
+  observe({
+    leafletProxy(mapId = "phys_map", data = phys_data_filtered()) %>%
+      clearMarkers() %>%  
+      addMarkers()
   })
   output$phys_table <- renderTable({
     table <- phys_table %>%
@@ -130,6 +156,7 @@ server <- function(input, output) {
         legend.position = "none")
     
   })
+  
   output$tabs_title <- renderText({ 
     "data source: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en"
   })

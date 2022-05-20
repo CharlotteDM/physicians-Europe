@@ -1,2 +1,3 @@
-server(function(input, output) {
-})
+
+
+server <- shinyServer(function(input, output, session){})
