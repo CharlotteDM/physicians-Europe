@@ -71,12 +71,71 @@ ui <- fluidPage(
         )
       )
     )
+
+#phys_table
+phys_table <- phys_data %>%
+  group_by(spec) %>%
+  arrange(-number) %>%
+  select(spec, number, year, Country)
+
+
     
- 
+#refine code
+server <- function(input, output) {
+  output$phys_map <- renderLeaflet({
+    pal_phys <- colorFactor(
+      palette = "Dark2",
+      domain = phys_data[[input$analysis_var]]
+    )
+    leaflet(data = phys_data) %>%
+      addProviderTiles("Stamen.TonerLite") %>%
+      addCircleMarkers(
+        lat = ~lat,
+        lng = ~long,
+        label = ~paste("Medical specialization: ", spec,
+                       "number: ", number),
+        color = ~pal_phys(phys_data[[input$analysis_var]]),
+        fillOpacity = .7,
+        radius = 4,
+        stroke = F) %>%
+      addLegend(
+        position = "bottomright",
+        title = input$analysis_var,
+        pal = pal_phys,
+        values = ~phys_data[[input$analysis_var]],
+        opacity = .5)
+  })
+  output$phys_table <- renderTable({
+    table <- phys_table %>%
+      group_by(phys_table[[input$analysis_var]]) %>% 
+      count %>%
+      arrange(-n) 
+    colnames(table) <- c(input$analysis_var, "Number")
+    table
+  })
+  output$phys_plot <- renderPlot({
+    ggplot (data = phys_data, (aes(x = spec, y = number, color=Country))) +
+      geom_boxplot() +
+      geom_jitter(width=0.15, alpha=0.3) +
+      labs(
+        title = "hhhh",
+        caption = "(based on data from: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en",
+        x = "kkk",
+        y = "ooo") +
+      theme(
+        plot.title = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
+        axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
+        axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
+        plot.caption.position = "plot",
+        legend.position = "none")
+    
+  })
+  output$tabs_title <- renderText({ 
+    "data source: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en"
+  })
+}
 
 
-shinyApp(ui = ui, server = server) 
-
-
+shinyApp(ui = ui, server = server, options = list(height = 800)) 
 
 
