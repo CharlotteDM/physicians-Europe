@@ -5,14 +5,18 @@ library("RColorBrewer")
 library("rstudioapi")
 library("leaflet")
 library("htmlwidgets")
+library("ggplot2")
 
-install.packages("rsconnect")
+#install.packages("rsconnect")
 library("rsconnect")
-install.packages("shinyWidgets")
+#install.packages("shinyWidgets")
 library("shinyWidgets")
+#install.packages("shinythemes")
+library("shinythemes")
 
-path <- dirname(rstudioapi::getActiveDocumentContext()$path)
-setwd(path)
+##uncomment to set working directory of RStudio - only for local
+#path <- dirname(rstudioapi::getActiveDocumentContext()$path)
+#setwd(path)
 
 physEurope <- read.csv("Data/physicians.csv", stringsAsFactors = F)
 #source of data: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en
@@ -46,6 +50,43 @@ pal_year <- colorFactor(palette = "Spectral", domain = phys_data[["year"]])
 pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 #pal_phys <- colorRampPalette(brewer.pal(9,"YlOrRd"))
 
+#application interface
+my_ui <- fluidPage(
+  titlePanel("Physicians by medical specialization"),
+  theme = shinytheme("slate"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput(
+        inputId = "analysis_var",
+        label = "Specialization:",
+        choices = unique(phys_data$spec))),
+    sidebarLayout(
+      sidebarPanel(
+        selectInput(
+          inputId = "year",
+          label = "Select year:",
+          choices = unique(phys_data$year))), 
+      sidebarLayout(
+        sidebarPanel(
+          selectInput(
+            inputId = "Country",
+            label = "Select country:",
+            choices = unique(phys_data$Country))), 
+        mainPanel(
+          textOutput("tabs_title"),
+          strong("For more information go to the section:"),
+          tabsetPanel(
+            tabPanel("Map", leafletOutput("phys_map")), 
+            tabPanel("Table", tableOutput("phys_table")),
+            tabPanel("Plot", plotOutput("phys_plot"))
+          )
+        )
+      )
+    )
+  )
+)
+
+
 #creates map
 phys_map <- leaflet(data = phys_data) %>%
   addProviderTiles("CartoDB.Positron") %>%
@@ -74,30 +115,6 @@ phys_table <- phys_data %>%
 
 
 
-
-#application interface
-my_ui <- fluidPage(
-  titlePanel("Physicians by medical specialization"),
-  sidebarLayout(
-    sidebarPanel(
-      selectInput(
-        inputId = "spec",
-        label = "Specialization:",
-        choices = unique(phys_data$spec))),
-    sidebarLayout(
-      sidebarPanel(
-        selectInput(
-          inputId = "year",
-          label = "Select year:",
-          choices = unique(phys_data$year))), 
-      sidebarLayout(
-        sidebarPanel(
-          selectInput(
-            inputId = "Country",
-            label = "Select country:",
-            choices = unique(phys_data$Country))), 
-    mainPanel(
-      leafletOutput(outputId = "phys_map"))))))
 
 
 
