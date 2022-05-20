@@ -51,7 +51,7 @@ pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 #pal_phys <- colorRampPalette(brewer.pal(9,"YlOrRd"))
 
 #application interface
-my_ui <- fluidPage(
+ui <- fluidPage(
   titlePanel("Physicians by medical specialization"),
   theme = shinytheme("slate"),
   sidebarLayout(
@@ -60,18 +60,6 @@ my_ui <- fluidPage(
         inputId = "analysis_var",
         label = "Specialization:",
         choices = unique(phys_data$spec))),
-    sidebarLayout(
-      sidebarPanel(
-        selectInput(
-          inputId = "year",
-          label = "Select year:",
-          choices = unique(phys_data$year))), 
-      sidebarLayout(
-        sidebarPanel(
-          selectInput(
-            inputId = "Country",
-            label = "Select country:",
-            choices = unique(phys_data$Country))), 
         mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
@@ -83,77 +71,11 @@ my_ui <- fluidPage(
         )
       )
     )
-  )
-)
+    
+ 
 
 
-#creates map
-phys_map <- leaflet(data = phys_data) %>%
-  addProviderTiles("CartoDB.Positron") %>%
-  addCircleMarkers(
-    lat = ~lat,
-    lng = ~long,
-    label = ~paste0(spec, ", ", number, ", ", Country, ", ", year),
-    color = ~pal_phys(phys_data[["spec"]]),
-    fillOpacity = .7,
-    radius = 4,
-    stroke = F) %>%
-  addLegend(
-    position = "bottomright",
-    title = "Medical specialization",
-    pal = pal_phys,
-    values = ~spec,
-    opacity = .5)
-
-
-#number of physicians in a given specialization
-
-phys_table <- phys_data %>%
-  group_by(spec) %>%
-  arrange(-number) %>%
-  select(spec, number, year, Country)
-
-
-
-
-
-
-
-#run app
-server <- function(input, output, sessions) {}
-shinyApp(ui = my_ui, server = server)  
-
-
-
-#refine code
-my_server <- function(input, output, session) {
-  output$phys_map <- renderLeaflet({
-    pal_phys <- colorFactor(
-      palette = "Spectral",
-      domain = phys_data[[input$analysis_var]]
-    )
-    leaflet(data = phys_data) %>%
-      addProviderTiles("Stamen.TonerLite") %>%
-      addCircleMarkers(
-        lat = ~lat,
-        lng = ~long,
-        label = ~paste0(spec, ", ", number, ", ", Country, ", ", year),
-        color = ~pal_phys(phys_data[["spec"]]),
-        fillOpacity = .7,
-        radius = 4,
-        stroke = F) %>%
-      addLegend(
-        position = "bottomright",
-        title = "Specializations",
-        pal = pal_phys,
-        values = ~spec,
-        opacity = .7)})
-    output$phys_plot <- renderPlot({
-      plot(phys_data()$year, phys_data()$Country, col = phys_data()$spec)})
- }
-
-
-shinyApp(ui = my_ui, server = my_server) 
+shinyApp(ui = ui, server = server) 
 
 
 
