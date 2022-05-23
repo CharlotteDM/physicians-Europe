@@ -66,12 +66,10 @@ ui <- fluidPage(
         inputId = "analysis_var",
         label = "Year:",
         choices = 1985:2020),
-      selectInput(
-        inputId = "analysis_var",
-        label = "Country:",
-        choices = unique(phys_data$Country),
-      )),
-        mainPanel(
+      selectInput(inputId = "color",
+                 label = "Color by:",
+                 choices = c("Country", "spec"))),
+  mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
           tabsetPanel(
@@ -81,7 +79,7 @@ ui <- fluidPage(
           )
         )
       )
-    )
+)
 
 #phys_table
 phys_table <- phys_data %>%
