@@ -6,6 +6,7 @@ library("rstudioapi")
 library("leaflet")
 library("htmlwidgets")
 library("ggplot2")
+library("DT")
 
 #install.packages("rsconnect")
 library("rsconnect")
@@ -78,7 +79,8 @@ ui <- fluidPage(
           tabsetPanel(
             tabPanel("Map", leafletOutput("phys_map")), 
             tabPanel("Plot", tableOutput("phys_plot"))
-          )
+          ),
+          DT::dataTableOutput(outputId = "phys_table")
         )
       )
 )
