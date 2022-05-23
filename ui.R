@@ -60,11 +60,11 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectInput(
-        inputId = "analysis_var",
+        inputId = "analysis_var1",
         label = "Specialization:",
         choices = unique(phys_data$spec)),
       selectInput(
-        inputId = "analysis_var",
+        inputId = "analysis_var2",
         label = "Year:",
         choices = 1985:2020),
       selectInput(inputId = "color", #color for charts
@@ -72,7 +72,10 @@ ui <- fluidPage(
                  choices = c("Country", "spec")),
       checkboxInput(inputId = "phys_table", #data table
                     label = "Show data table",
-                    value = T)),
+                    value = T),
+      checkboxGroupInput(inputId = "selected_var",
+                         label = "Select the data you are interested in that you want to see on the map:",
+                         choices = c("spec", "Country", "year") )),
   mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
@@ -85,15 +88,8 @@ ui <- fluidPage(
       )
 )
 
-#phys_table
-phys_table <- phys_data %>%
-  group_by(spec) %>%
-  arrange(-number) %>%
-  select(spec, number, year, Country)
 
-
-    
-#refine code
+#code
 server <- function (input, output) {
   output$phys_map <- renderLeaflet({
     pal_phys <- colorFactor(
@@ -132,13 +128,13 @@ server <- function (input, output) {
   })
   output$phys_table <- DT::renderDataTable(
     if(input$phys_table) {
-      DT::datatable(data = phys_data[, c(5:8, 10)],
+      DT::datatable(data = phys_data[, c(5, 7:8, 10)],
                     options = list(pageLength = 10),
                     rownames = F)
     }
   )
   output$phys_plot <- renderPlot({
-    ggplot (data = phys_data, (aes(x = input$analysis_var, y = input$analysis_var, color = input$color))) +
+    ggplot (data = phys_data, (aes(x = input$analysis_var1, y = input$analysis_var2, color = input$color))) +
       geom_point()  +
       labs(
         title = "hhhh",
