@@ -66,15 +66,17 @@ ui <- fluidPage(
         inputId = "analysis_var",
         label = "Year:",
         choices = 1985:2020),
-      selectInput(inputId = "color",
+      selectInput(inputId = "color", #color for charts
                  label = "Color by:",
-                 choices = c("Country", "spec"))),
+                 choices = c("Country", "spec")),
+      checkboxInput(inputId = "phys_table", #data table
+                    label = "Show data table",
+                    value = T)),
   mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
           tabsetPanel(
             tabPanel("Map", leafletOutput("phys_map")), 
-            tabPanel("Table", tableOutput("phys_table")),
             tabPanel("Plot", tableOutput("phys_plot"))
           )
         )
@@ -126,17 +128,15 @@ server <- function (input, output) {
       clearMarkers() %>%  
       addMarkers()
   })
-  
-  output$phys_table <- renderTable({
-    table <- phys_table %>%
-      group_by(phys_table[[input$analysis_var]]) %>% 
-      count %>%
-      arrange(-n) 
-    colnames(table) <- c(input$analysis_var, "Number")
-    table
-  })
+  output$phys_table <- DT::renderDataTable(
+    if(input$phys_table) {
+      DT::datatable(data = phys_data[, c(5:8, 10)],
+                    options = list(pageLength = 10),
+                    rownames = F)
+    }
+  )
   output$phys_plot <- renderPlot({
-    ggplot (data = phys_data, (aes(x = input$analysis_var, y = input$analysis_var, color = Country))) +
+    ggplot (data = phys_data, (aes(x = input$analysis_var, y = input$analysis_var, color = input$color))) +
       geom_point()  +
       labs(
         title = "hhhh",
