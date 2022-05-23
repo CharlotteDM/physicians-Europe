@@ -13,7 +13,8 @@ library("rsconnect")
 library("shinyWidgets")
 #install.packages("shinythemes")
 library("shinythemes")
-
+#install.packages("shinydashboard")
+#library("shinydashboard")
 
 ##uncomment to set working directory of RStudio - only for local
 #path <- dirname(rstudioapi::getActiveDocumentContext()$path)
@@ -121,16 +122,13 @@ server <- function (input, output) {
   phys_data_filtered <- reactive({
     phys_data[phys_data$year %in% input$analysis_var, ]
   })
-  phys_data_filtered <- reactive({
-    phys_data[phys_data$Country %in% input$analysis_var, ]
-  })
-
 
   observe({
     leafletProxy(mapId = "phys_map", data = phys_data_filtered()) %>%
       clearMarkers() %>%  
       addMarkers()
   })
+  
   output$phys_table <- renderTable({
     table <- phys_table %>%
       group_by(phys_table[[input$analysis_var]]) %>% 
@@ -140,9 +138,8 @@ server <- function (input, output) {
     table
   })
   output$phys_plot <- renderPlot({
-    ggplot (data = phys_data, (aes(x = spec, y = number, color=Country))) +
-      geom_boxplot() +
-      geom_jitter(width=0.15, alpha=0.3) +
+    ggplot (data = phys_data, (aes(x = input$analysis_var, y = input$analysis_var, color = Country))) +
+      geom_point()  +
       labs(
         title = "hhhh",
         caption = "(based on data from: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en",
