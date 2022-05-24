@@ -16,6 +16,11 @@ library("shinyWidgets")
 library("shinythemes")
 #install.packages("shinydashboard")
 #library("shinydashboard")
+#install.packages("leaflet.extras")
+library("leaflet.extras")
+
+
+
 
 ##uncomment to set working directory of RStudio - only for local
 #path <- dirname(rstudioapi::getActiveDocumentContext()$path)
@@ -55,77 +60,80 @@ pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 
 #application interface
 ui <- fluidPage(
-  titlePanel("Physicians by medical specialization"),
+  titlePanel(p("Physicians by medical specialization")),
   theme = shinytheme("sandstone"),
   sidebarLayout(
     sidebarPanel(
       selectInput(
-        inputId = "analysis_var1",
+        inputId = "spec",
         label = "Specialization:",
         choices = unique(phys_data$spec)),
       selectInput(
-        inputId = "analysis_var2",
+        inputId = "yr",
         label = "Year:",
-        choices = 1985:2020),
-      selectInput(inputId = "color", #color for charts
-                 label = "Color by:",
-                 choices = c("Country", "spec")),
+        choices = 1985:2020)),
       checkboxInput(inputId = "phys_table", #data table
                     label = "Show data table",
-                    value = T),
-      checkboxGroupInput(inputId = "selected_var",
-                         label = "Select the data you are interested in that you want to see on the map:",
-                         choices = c("spec", "Country", "year") )),
+                    value = T)),
   mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
           tabsetPanel(
-            tabPanel("Map", leafletOutput("phys_map")), 
-            tabPanel("Plot", tableOutput("phys_plot"))
-          ),
+            tabPanel("Map", leafletOutput("phys_map"))),
           DT::dataTableOutput(outputId = "phys_table")
-        )
+        ))
+
+
+
+mod <- function(input, output, session, legend, prox){
+  
+  observe({
+    prox %>% clearControls()
+    if (legend()) {
+      prox %>% addLegend(position = "bottomright",
+                         pal1 = colorFactor("Set3", phys_data$spec), values = ~spec
       )
-)
+    }
+  }) }
+
 
 
 #code
-server <- function (input, output) {
+server <- function (input, output, session) {
+  
+  #color for spec
+  pal1 <- colorFactor(
+    palette = "Set3",
+    domain = phys_data$spec)
+  
+  #color for year
+  pal2 <- colorFactor(
+    palette = "Spectral",
+    domain = phys_data$analysis_var_sec)
+  
+  #creates the map
   output$phys_map <- renderLeaflet({
-    pal_phys <- colorFactor(
-      palette = "Set3",
-      domain = phys_data[[input$analysis_var]]
-    )
-    leaflet(data = phys_data) %>%
-      addProviderTiles("Stamen.TonerLite") %>%
-      addCircleMarkers(
+    pal1 <- colorFactor(palette = "Set3", domain = phys_data$spec)
+    leaflet(phys_data) %>% 
+      addProviderTiles("Stamen.TonerLite") %>% 
+      addCircles(
+        data = phys_data,
         lat = ~lat,
         lng = ~long,
         label = ~paste("Medical specialization: ", spec,
                        "number: ", number),
-        color = ~pal_phys(phys_data[[input$analysis_var]]),
+        color = ~pal1(spec),
         fillOpacity = .7,
         radius = 4,
-        stroke = F) %>%
-      addLegend(
-        position = "bottomright",
-        title = input$analysis_var,
-        pal = pal_phys,
-        values = ~phys_data[[input$analysis_var]],
-        opacity = .5)
-  })
-  phys_data_filtered <- reactive({
-    phys_data[phys_data$year %in% input$analysis_var, ]
-  })  
-  phys_data_filtered <- reactive({
-    phys_data[phys_data$year %in% input$analysis_var, ]
-  })
+        stroke = F) 
+  }
+  )
+  
+  
+    proxy <- leafletProxy("phys_map", data = phys_data) %>%
+    callModule(mod, "mod", reactive(input$spec), proxy)
 
-  observe({
-    leafletProxy(mapId = "phys_map", data = phys_data_filtered()) %>%
-      clearMarkers() %>%  
-      addMarkers()
-  })
+  #table - good!
   output$phys_table <- DT::renderDataTable(
     if(input$phys_table) {
       DT::datatable(data = phys_data[, c(5, 7:8, 10)],
@@ -133,27 +141,9 @@ server <- function (input, output) {
                     rownames = F)
     }
   )
-  output$phys_plot <- renderPlot({
-    ggplot (data = phys_data, (aes(x = input$analysis_var1, y = input$analysis_var2, color = input$color))) +
-      geom_point()  +
-      labs(
-        title = "hhhh",
-        caption = "(based on data from: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en",
-        x = "kkk",
-        y = "ooo") +
-      theme(
-        plot.title = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
-        axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
-        axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
-        plot.caption.position = "plot",
-        legend.position = "none")
-    
-  })
   
-  output$tabs_title <- renderText({ 
-    "data source: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en"
-  })
 }
+
 
 
 shinyApp(ui = ui, server = server, options = list(height = 800)) 
