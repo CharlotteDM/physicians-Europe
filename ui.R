@@ -65,39 +65,27 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectInput(
-        inputId = "spec",
+        inputId = "var1",
         label = "Specialization:",
         choices = unique(phys_data$spec)),
       selectInput(
-        inputId = "yr",
+        inputId = "var2",
         label = "Year:",
-        choices = 1985:2020)),
+        choices = 1985:2020),
       checkboxInput(inputId = "phys_table", #data table
                     label = "Show data table",
-                    value = T)),
+                    value = T),
+      checkboxGroupInput(inputId = "selected_var", #data for chart
+                     label = "Select the data you are interested in that you want to see on the plot:",
+                     choices = c("spec", "Country", "year") )),
   mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
           tabsetPanel(
-            tabPanel("Map", leafletOutput("phys_map"))),
+          tabPanel("Map", leafletOutput("phys_map")),
+          tabPanel("Chart", tableOutput("phys_chart"))),
           DT::dataTableOutput(outputId = "phys_table")
-        ))
-
-
-
-mod <- function(input, output, session, legend, prox){
-  
-  observe({
-    prox %>% clearControls()
-    if (legend()) {
-      prox %>% addLegend(position = "bottomright",
-                         pal1 = colorFactor("Set3", phys_data$spec), values = ~spec
-      )
-    }
-  }) }
-
-
-
+        )))
 #code
 server <- function (input, output, session) {
   
@@ -130,8 +118,7 @@ server <- function (input, output, session) {
   )
   
   
-    proxy <- leafletProxy("phys_map", data = phys_data) %>%
-    callModule(mod, "mod", reactive(input$spec), proxy)
+
 
   #table - good!
   output$phys_table <- DT::renderDataTable(
