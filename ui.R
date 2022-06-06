@@ -92,32 +92,39 @@ server <- function (input, output, session) {
   #color for spec
   pal1 <- colorFactor(
     palette = "Set3",
-    domain = phys_data$spec)
+    domain = phys_data$var1)
   
   #color for year
   pal2 <- colorFactor(
     palette = "Spectral",
-    domain = phys_data$analysis_var_sec)
+    domain = phys_data$var2)
   
   #creates the map
-  output$phys_map <- renderLeaflet({
-    pal1 <- colorFactor(palette = "Set3", domain = phys_data$spec)
-    leaflet(phys_data) %>% 
-      addProviderTiles("Stamen.TonerLite") %>% 
-      addCircles(
-        data = phys_data,
-        lat = ~lat,
-        lng = ~long,
-        label = ~paste("Medical specialization: ", spec,
-                       "number: ", number),
-        color = ~pal1(spec),
-        fillOpacity = .7,
-        radius = 4,
-        stroke = F) 
-  }
-  )
+ 
+  
+  dat <- reactive({
+    vals <- rpois(input$var1())
+    data.frame(latitude = lat, longitude = long, vals)
+  })
+  
+  output$mymap <- renderLeaflet({
+    leaflet() %>% 
+      addProviderTiles("Stamen.TonerLite") %>%  
+      addCircleMarkers(data = dat(), 
+                       lat = ~lat,
+                       lng = ~long,
+                       label = ~paste("Medical specialization: ", spec,
+                                      "number: ", number),
+                       color = ~pal1(var1),
+                       fillOpacity = .7,
+                       radius = 4,
+                       stroke = F) 
+    })
   
   
+  #render a chart
+  
+
 
 
   #table - good!
@@ -128,7 +135,6 @@ server <- function (input, output, session) {
                     rownames = F)
     }
   )
-  
 }
 
 
