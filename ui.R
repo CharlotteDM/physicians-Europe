@@ -23,12 +23,12 @@ library("leaflet.extras")
 
 
 ##uncomment to set working directory of RStudio - only for local
-#path <- dirname(rstudioapi::getActiveDocumentContext()$path)
-#setwd(path)
+path <- dirname(rstudioapi::getActiveDocumentContext()$path)
+setwd(path)
 
 physEurope <- read.csv("Data/physicians.csv", stringsAsFactors = F)
 #source of data: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en
-#physEurope2019 <- filter(physEurope, TIME_PERIOD == 2019)
+
 
 long_lat <- read.csv("Data/long_lat.csv", stringsAsFactors = F)
 #source of data: https://gist.github.com/metal3d/5b925077e66194551df949de64e910f6
@@ -97,28 +97,28 @@ server <- function (input, output, session) {
   #color for year
   pal2 <- colorFactor(
     palette = "Spectral",
-    domain = phys_data$var2)
+   domain = phys_data$var2)
   
   #creates the map
  
   
-  dat <- reactive({
-    vals <- rpois(input$var1())
+ dat <- reactive({
+   vals <- rpois(input$var1())
     data.frame(latitude = lat, longitude = long, vals)
   })
   
   output$mymap <- renderLeaflet({
-    leaflet() %>% 
-      addProviderTiles("Stamen.TonerLite") %>%  
-      addCircleMarkers(data = dat(), 
-                       lat = ~lat,
-                       lng = ~long,
-                       label = ~paste("Medical specialization: ", spec,
-                                      "number: ", number),
-                       color = ~pal1(var1),
+   leaflet() %>% 
+     addProviderTiles("Stamen.TonerLite") %>%  
+     addCircleMarkers(data = dat(), 
+                     lat = ~lat,
+                      lng = ~long,
+                      label = ~paste("Medical specialization: ", spec,
+                                   "number: ", number),
+                     color = ~pal1(var1),
                        fillOpacity = .7,
-                       radius = 4,
-                       stroke = F) 
+                     radius = 4,
+                    stroke = F) 
     })
   
   
@@ -129,12 +129,12 @@ server <- function (input, output, session) {
 
   #table - good!
   output$phys_table <- DT::renderDataTable(
-    if(input$phys_table) {
+   if(input$phys_table) {
       DT::datatable(data = phys_data[, c(5, 7:8, 10)],
                     options = list(pageLength = 10),
-                    rownames = F)
+                  rownames = F)
     }
-  )
+ )
 }
 
 
