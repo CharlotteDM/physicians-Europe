@@ -72,6 +72,10 @@ ui <- fluidPage(
         inputId = "var2",
         label = "Year:",
         choices = 1985:2020),
+      selectInput(
+        inputId = "var3",
+        label = "Country",
+        choices = unique(phys_data$Country)),
       checkboxInput(inputId = "phys_table", #data table
                     label = "Show data table",
                     value = T),
