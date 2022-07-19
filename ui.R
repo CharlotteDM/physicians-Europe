@@ -105,6 +105,16 @@ server <- function (input, output, session) {
     palette = "Spectral",
    domain = phys_data$var2)
   
+  #filter data based on selections
+  dataShow <- reactive({
+    data <- phys_data
+    if (input$var1 != "All") {
+      data <- data[data$spec == input$var1, ]
+    }
+    data
+  }) 
+  
+  
   #creates the map
  output$phys_map <- renderLeaflet({
    leaflet(phys_data) %>%
