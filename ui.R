@@ -60,7 +60,7 @@ pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 
 #application interface
 ui <- fluidPage(
-  titlePanel(p("Physicians by medical specialization")),
+  titlePanel(p("Physicians by medical specialization 1985-2020")),
   theme = shinytheme("sandstone"),
   sidebarLayout(
     sidebarPanel(
