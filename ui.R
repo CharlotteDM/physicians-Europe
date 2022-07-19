@@ -117,7 +117,7 @@ server <- function (input, output, session) {
   
   #creates the map
  output$phys_map <- renderLeaflet({
-   leaflet(phys_data) %>%
+  map <- leaflet(dataShow) %>%
      addTiles() %>%
      addCircles(
        lat = ~lat,
@@ -129,13 +129,7 @@ server <- function (input, output, session) {
        color = ~pal1(phys_data[[input$var1]]),
        fillOpacity = .7,
        radius = 4,
-       stroke = F) %>%
-   addLegend(
-     position = "bottomright",
-     title = input$var1,
-     pal = pal1,
-     values = ~phys_data[[input$var1]],
-     opacity = .5)
+       stroke = F) 
  })
 output$phys_table <- renderTable({
   table <- phys_table %>%
@@ -146,7 +140,7 @@ output$phys_table <- renderTable({
   table
 })
 output$my_plot <- renderPlot({
-  ggplot (data = phys_data) +
+  ggplot (data = dataShow) +
     geom_point(mapping = aes(x = Country, y = number)) +
     facet_wrap(~ spec, nrow = 3)
     labs(
