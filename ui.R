@@ -83,10 +83,7 @@ ui <- fluidPage(
       selectInput(
         inputId = "var3",
         label = "Country",
-        choices = unique(phys_data$Country)),
-      checkboxInput(inputId = "phys_table", #data table
-                    label = "Data table",
-                    value = T)),
+        choices = unique(phys_data$Country))),
   mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
