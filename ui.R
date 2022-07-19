@@ -58,6 +58,13 @@ pal_year <- colorFactor(palette = "Spectral", domain = phys_data[["year"]])
 pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 #pal_phys <- colorRampPalette(brewer.pal(9,"YlOrRd"))
 
+
+#table
+phys_table <- phys_data %>%
+  group_by(spec) %>%
+  arrange(-number) %>%
+  select(year, number, Country)
+
 #application interface
 ui <- fluidPage(
   titlePanel(p("Physicians by medical specialization 1985-2020")),
@@ -78,10 +85,10 @@ ui <- fluidPage(
         choices = unique(phys_data$Country)),
       checkboxInput(inputId = "phys_table", #data table
                     label = "Data table",
-                    choices = c("spec", "Country", "year")),
+                    value = T),
       checkboxGroupInput(inputId = "selected_var", #data for chart
                      label = "Select the data you are interested in that you want to see on the plot:",
-                     value = T)),
+                     choices = c("spec", "Country", "year"))),
   mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
@@ -134,7 +141,7 @@ server <- function (input, output, session) {
   #table - good!
   output$phys_table <- renderDataTable(
    if(input$phys_table) {
-      DT::datatable(data = phys_data[, c(5, 7:8, 10)],
+     datatable(data = phys_data[, c(5, 7:8, 10)],
                     options = list(pageLength = 10),
                   rownames = F)
     }
