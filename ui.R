@@ -129,7 +129,13 @@ server <- function (input, output, session) {
        color = ~pal1(phys_data[[input$var1]]),
        fillOpacity = .7,
        radius = 4,
-       stroke = F) 
+       stroke = F) %>%
+   addLegend(
+     position = "bottomright",
+     title = input$var1,
+     pal = pal1,
+     values = ~phys_data[[input$var1]],
+     opacity = .5)
  })
 output$phys_table <- renderTable({
   table <- phys_table %>%
