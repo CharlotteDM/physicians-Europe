@@ -86,10 +86,7 @@ ui <- fluidPage(
         choices = unique(phys_data$Country)),
       checkboxInput(inputId = "phys_table", #data table
                     label = "Data table",
-                    value = T),
-      checkboxGroupInput(inputId = "selected_var", #data for chart
-                     label = "Select the data you are interested in that you want to see on the plot:",
-                     choices = c("spec", "Country", "year"))),
+                    value = T)),
   mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
