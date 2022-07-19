@@ -80,15 +80,15 @@ ui <- fluidPage(
                     label = "Show data table",
                     value = T),
       checkboxGroupInput(inputId = "selected_var", #data for chart
-                     label = "Select the data you are interested in that you want to see on the plot:",
+                     label = "Select the data you are interested in that you want to see on the chart:",
                      choices = c("spec", "Country", "year") )),
   mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
           tabsetPanel(
           tabPanel("Map", leafletOutput("phys_map")),
-          tabPanel("Chart", tableOutput("phys_chart"))),
-          DT::dataTableOutput(outputId = "phys_table")
+          tabPanel("Chart", plotOutput("phys_chart")),
+          tabPanel("Table", tableOutput("phys_table")))
         )))
 #code
 server <- function (input, output, session) {
