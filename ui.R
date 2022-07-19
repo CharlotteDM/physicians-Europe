@@ -65,6 +65,7 @@ phys_table <- phys_data %>%
   arrange(-number) %>%
   select(year, number, Country)
 
+
 #application interface
 ui <- fluidPage(
   titlePanel(p("Physicians by medical specialization 1985-2020")),
@@ -111,45 +112,56 @@ server <- function (input, output, session) {
    domain = phys_data$var2)
   
   #creates the map
- 
+ output$phys_map <- renderLeaflet({
+   leaflet(phys_data) %>%
+     addTiles() %>%
+     addCircles(
+       lat = ~lat,
+       lng = ~long,
+       label = ~paste("Specialization: ", spec,
+                      "Number of physicians: ", number,
+                      "Country: ", Country,
+                      "Year:", year),
+       color = ~pal1(phys_data[[input$var1]]),
+       fillOpacity = .7,
+       radius = 4,
+       stroke = F) %>%
+   addLegend(
+     position = "bottomright",
+     title = input$var1,
+     pal = pal1,
+     values = ~phys_data[[input$var1]],
+     opacity = .5)
+ })
+output$phys_table <- renderTable({
+  table <- phys_table %>%
+    group_by(phys_table[[input$var1]]) %>% 
+    count %>%
+    arrange(-n) 
+  colnames(table) <- c(input$var1, "Specialization")
+  table
+})
+output$my_plot <- renderPlot({
+  ggplot (data = phys_data) +
+    geom_point(mapping = aes(x = Country, y = number)) +
+    facet_wrap(~ spec, nrow = 3)
+    labs(
+      title = "Physician's pecialization in Europe",
+      caption = "(based on data from: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en",
+      x = "Country",
+      y = "Number of physicians") +
+    theme(
+      plot.title = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
+      axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
+      axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
+      plot.caption.position = "plot",
+      legend.position = "none")
   
- dat <- reactive({
-   vals <- rpois(input$var1())
-    data.frame(latitude = lat, longitude = long, vals)
-  })
-  
-  output$mymap <- renderLeaflet({
-   leaflet() %>% 
-     addProviderTiles("Stamen.TonerLite") %>%  
-     addCircleMarkers(data = dat(), 
-                     lat = ~lat,
-                      lng = ~long,
-                      label = ~paste("Medical specialization: ", spec,
-                                   "number: ", number),
-                     color = ~pal1(var1),
-                       fillOpacity = .7,
-                     radius = 4,
-                    stroke = F) 
-    })
-  
-  
-  #render a chart
-  
-
-
-
-  #table - good!
-  output$phys_table <- renderDataTable(
-   if(input$phys_table) {
-     datatable(data = phys_data[, c(5, 7:8, 10)],
-                    options = list(pageLength = 10),
-                  rownames = F)
-    }
- )
+})
+output$tabs_title <- renderText({ 
+  "data source: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en"
+})
 }
 
 
-
-shinyApp(ui = ui, server = server, options = list(height = 800)) 
-
-
+shinyApp(ui, server)
