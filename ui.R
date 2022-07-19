@@ -88,7 +88,7 @@ ui <- fluidPage(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
           tabsetPanel(
-          tabPanel("Map", leafletOutput("phys_map")),
+          tabPanel("Map", leafletOutput("phys_map", width = 800, height = 500)),
           tabPanel("Chart", plotOutput("phys_chart")),
           tabPanel("Table", tableOutput("phys_table")))
         )))
