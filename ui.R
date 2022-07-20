@@ -102,13 +102,13 @@ server <- function (input, output, session) {
    domain = phys_data$var2)
   
   #filter data based on selections
-  dataShow <- reactive({
-    data <- phys_data
-    if (input$var1 != "All") {
-      data <- data[data$spec == input$var1, ]
-    }
-    data
-  }) 
+  #dataShow <- reactive({
+   # data <- phys_data
+   # if (input$var1 != "All") {
+    #  data <- data[data$spec == input$var1, ]
+   # }
+   # data
+  #}) 
   
   
   #creates the map
@@ -134,6 +134,7 @@ server <- function (input, output, session) {
      opacity = .5)
  })
  
+ 
 output$phys_table <- renderTable({
   table <- phys_table %>%
     group_by(phys_table[[input$var1]]) %>% 
@@ -143,9 +144,18 @@ output$phys_table <- renderTable({
   table
 })
 
+#reactive expression for plot
+plot_data <- reactive({
+  phys_data %>%
+    filter(year == input$var2) %>%
+    filter(specialization == inpu$var1)
+})
+
+#render plot
 output$my_plot <- renderPlot({
-  ggplot (data = dataShow) +
-    geom_point(mapping = aes(x = input$var3, y = number)) +
+  plot_data %>%
+  ggplot (data = phys_data) +
+    geom_point(mapping = aes(x = Country, y = number)) +
     facet_wrap(~ spec, nrow = 3) +
     labs(
       title = "Physician's pecialization in Europe",
