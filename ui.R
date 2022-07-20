@@ -114,7 +114,7 @@ server <- function (input, output, session) {
   map_data <- reactive({
     phys_data %>%
       filter(year == input$var2) %>%
-      filter(specialization == input$var1)
+      filter(spec == input$var1)
   })  
   
   
@@ -155,7 +155,7 @@ output$phys_table <- renderTable({
 plot_data <- reactive({
   phys_data %>%
     filter(year == input$var2) %>%
-    filter(specialization == input$var1)
+    filter(spec == input$var1)
 })
 
 #render plot
