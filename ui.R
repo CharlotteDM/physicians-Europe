@@ -79,11 +79,7 @@ ui <- fluidPage(
       selectInput(
         inputId = "var2",
         label = "Year:",
-        choices = 1985:2020),
-      selectInput(
-        inputId = "var3",
-        label = "Country",
-        choices = unique(phys_data$Country))),
+        choices = 1985:2020)),
   mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
