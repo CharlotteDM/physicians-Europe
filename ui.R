@@ -137,6 +137,7 @@ server <- function (input, output, session) {
      values = ~phys_data[[input$var1]],
      opacity = .5)
  })
+ 
 output$phys_table <- renderTable({
   table <- phys_table %>%
     group_by(phys_table[[input$var1]]) %>% 
@@ -145,10 +146,11 @@ output$phys_table <- renderTable({
   colnames(table) <- c(input$var1, "Specialization")
   table
 })
+
 output$my_plot <- renderPlot({
   ggplot (data = dataShow) +
-    geom_point(mapping = aes(x = Country, y = number)) +
-    facet_wrap(~ spec, nrow = 3)
+    geom_point(mapping = aes(x = input$var3, y = number)) +
+    facet_wrap(~ spec, nrow = 3) +
     labs(
       title = "Physician's pecialization in Europe",
       caption = "(based on data from: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en",
