@@ -110,10 +110,17 @@ server <- function (input, output, session) {
    # data
   #}) 
   
+  #reactive expression for map
+  map_data <- reactive({
+    phys_data %>%
+      filter(year == input$var2) %>%
+      filter(specialization == input$var1)
+  })  
+  
   
   #creates the map
  output$phys_map <- renderLeaflet({
-  map <- leaflet(dataShow) %>%
+  map <- leaflet(map_data) %>%
      addTiles() %>%
      addCircles(
        lat = ~lat,
@@ -148,7 +155,7 @@ output$phys_table <- renderTable({
 plot_data <- reactive({
   phys_data %>%
     filter(year == input$var2) %>%
-    filter(specialization == inpu$var1)
+    filter(specialization == input$var1)
 })
 
 #render plot
