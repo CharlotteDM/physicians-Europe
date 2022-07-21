@@ -218,6 +218,7 @@ server <- function (input, output) {
                           "<br><strong> Year: </strong>",
                           selected_year()$year)
     
+    #make map
     leafletProxy("phys_map", data = selected_spec()) %>%
       clearMarkerClusters() %>%
       clearMarkers() %>%
@@ -230,12 +231,12 @@ server <- function (input, output) {
   })
   
   observe({
-    state_popup <- paste0("<strong>spec: </strong>",
+    state_popup <- paste0("<strong> Spec: </strong>",
                           selected_spec()$spec,
-                          "<br><strong> Topic: </strong>",
+                          "<br><strong> Year: </strong>",
                           selected_year()$year)
-    
-    leafletProxy("map", data = selected_year()) %>%
+    #make map
+    leafletProxy("phys_map", data = selected_year()) %>%
       clearMarkers() %>%
       clearMarkerClusters() %>%
       addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
