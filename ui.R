@@ -101,7 +101,7 @@ server <- function (input, output, session) {
     # Use leaflet() here, and only include aspects of the map that
     # won't need to change dynamically (at least, not unless the
     # entire map is being torn down and recreated).
-    leaflet(phys_date) %>% 
+    leaflet(phys_data) %>% 
       addTiles() %>%
       addCircles(
         lat  = ~lat,
@@ -110,15 +110,15 @@ server <- function (input, output, session) {
                        "Number of physicians: ", number,
                        "Country: ", Country,
                        "Year:", year),
-        color = ~pal_phys(phys_data[[input$var1]]),
+        color = ~pal_phys(specialization),
         fillOpacity = .7,
         radius = 4,
         stroke = F) %>%
       addLegend(
         position = "bottomright",
-        title = input$var1,
+        title = specialization,
         pal = pal_phys,
-        values = ~phys_data[[input$var1]],
+        values = ~specialization,
         opacity = .5)
   })
  
@@ -126,11 +126,11 @@ server <- function (input, output, session) {
   observe({
     leafletProxy(
       "phys_map", 
-      data = filtered_phys_data()
+      data = phys_data()
       ) %>%
       clearMarkers() %>%
       addCircleMarkers(weight = 1, color = "#777777",
-                 fillColor = ~pal_phys(spec), fillOpacity = 0.7, popup = ~paste(spec)
+                 fillColor = ~pal_phys(specialization), fillOpacity = 0.7, popup = ~paste(specialization)
       )
   })
   
