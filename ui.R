@@ -124,9 +124,10 @@ server <- function (input, output, session) {
  
 
   observeEvent({
-    leafletProxy(
-      "phys_map", 
-      data = phys_data()) %>%
+    
+   req(input$var1, input$var2)
+    
+   proxy <- leafletProxy("phys_map", data = phys_data()) %>%
       clearMarkers() %>%
       addCircleMarkers(weight = 1, color = "#777777",
                  fillColor = ~pal_phys(specialization), fillOpacity = 0.7, popup = ~paste(specialization)
