@@ -92,16 +92,23 @@ ui <- fluidPage(
 #code
 server <- function (input, output, session) {
   
-  # Reactive expression for the data 
-  specialization <- reactive(input$var1)
-  year <- reactive(input$var2)
+  #reactive
+  rval_phys_data <- reactive({
+    # MODIFY CODE BELOW: Filter and selected date_range.
+   phys_data %>% 
+      filter(
+        spec == input$var1,
+        year == input$var2
+      )
+  })
+  
   
   
   output$map <- renderLeaflet({
     # Use leaflet() here, and only include aspects of the map that
     # won't need to change dynamically (at least, not unless the
     # entire map is being torn down and recreated).
-    leaflet(phys_data) %>% 
+    leaflet(rval_phys_data) %>% 
       addTiles() %>%
       addCircles(
         lat  = ~lat,
@@ -110,27 +117,23 @@ server <- function (input, output, session) {
                        "Number of physicians: ", number,
                        "Country: ", Country,
                        "Year:", year),
-        color = ~pal_phys(specialization),
         fillOpacity = .7,
         radius = 4,
         stroke = F) %>%
       addLegend(
         position = "bottomright",
         title = specialization,
-        pal = pal_phys,
         values = ~specialization,
         opacity = .5)
   })
  
 
   observeEvent({
-    
    req(input$var1, input$var2)
-    
-   proxy <- leafletProxy("phys_map", data = phys_data()) %>%
+   leafletProxy("phys_map", data = phys_data()) %>%
       clearMarkers() %>%
       addCircleMarkers(weight = 1, color = "#777777",
-                 fillColor = ~pal_phys(specialization), fillOpacity = 0.7, popup = ~paste(specialization)
+                 fillOpacity = 0.7
       )
   })
   
