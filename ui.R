@@ -60,9 +60,9 @@ pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 
 
 #table
-phys_table <- phys_data %>%
-  group_by(spec) %>%
-  arrange(-number) 
+# phys_table <- phys_data %>%
+#   group_by(spec) %>%
+#   arrange(-number) 
 
 
 #application interface
@@ -72,58 +72,176 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectInput(
-        inputId = "var1",
+        inputId = "spec",
         label = "Specialization:",
         choices = unique(phys_data$spec)),
       selectInput(
-        inputId = "var2",
+        inputId = "year",
         label = "Year:",
-        choices = 1985:2020),
-      selectInput(
-        inputId = "var3",
-        label = "Country:",
-        choices = unique(phys_data$Country))),
+        choices = 1985:2020)
+      ),
   mainPanel(
           textOutput("tabs_title"),
           strong("For more information go to the section:"),
           tabsetPanel(
-          tabPanel("Map", leafletOutput("phys_map", width = 800, height = 500)),
+          tabPanel("Map", leafletOutput("phys_map")),
           tabPanel("Chart", plotOutput("phys_chart")),
           tabPanel("Table", tableOutput("phys_table")))
-        )))
+      )
+  )
+)
 
 
 #code
-server <- function (input, output, session) {
+server <- function (input, output) {
   
-  #reactive table
+  #Radkowe:
+  # filteredData <- reactive({
+  #   phys_data[phys_data$spec == input$spec[1],]
+  #   #phys_data[phys_data$year == input$year[1],]
+  # })
+  
+  
+  
+  #moje:
+  # filtered_data <- reactive({
+  #   phys_data %>%
+  #     filter(
+  #            Specialization %in% input$spec[1],
+  #            Year %in% input$year[1]
+  #     )
+  # })
+  
+  
+  
 
-  values <- reactiveValues()
-  values$phys_data <- data.frame(phys_data$spec, phys_data$year, phys_data$Country)
-  newEntry <- observe({
-    if(input$var1 > 0) {
-      newLine <- isolate(input$var1)
-      isolate(values$phys_data <- rbind(values$phys_data, newLine))
-    }
-    if(input$var2 >= 1985) {
-      newLine2 <- isolate(input$var2)
-      isolate(values$phys_data <- rbind(values$phys_data, newLine2))
-    }
+  
+  #render map
+  #Radkowe:
+  # output$phys_map <- renderLeaflet({
+  # 
+  #    pal_phys <- colorFactor(
+  #    palette = "Set3",
+  #    domain = input$spec
+  #    )
+  # 
+  #   leaflet(data = phys_data()) %>%
+  #   addProviderTiles("Stamen.TonerLite") %>%
+  #   addCircleMarkers(
+  #   lat = ~lat,
+  #   lng = ~long,
+  #   label = ~paste("Specialization: ", spec,
+  #                  "Number of physicians: ", number,
+  #                  "Country: ", Country,
+  #                  "Year:", year),
+  #   color = ~pal_phys(input$spec),
+  #   fillOpacity = .7,
+  #   radius = 4,
+  #   stroke = F) %>%
+  # addLegend(
+  #   position = "bottomright",
+  #   title = input$spec,
+  #   pal = pal_phys,
+  #   values = input$spec,
+  #   opacity = .5)
+  #    })
+  
+  
+  #Moje
+  # pal_phys <- colorFactor(
+  #   palette = "Set3",
+  #   domain = input$spec
+  #   )
+  
+  #moje
+  # output$phys_map <- renderLeaflet({
+  #   leaflet(data = phys_data()) %>%
+  #   addProviderTiles("Stamen.TonerLite")
+  # })
+  
+  
+  #Moje
+  # observe({leafletProxy("phys_map") %>%
+  #           addCircles(data = filteredData(),
+  #                      lng = ~long, lat = ~lat,
+  #                      color = pal_phys,
+  #                      label = ~paste("Specialization: ", spec,
+  #                                     "Number of physicians: ", number,
+  #                                     "Country: ", Country,
+  #                                     "Year:", year)
+  # 
+  #                      )})
+  
+  
+  #Radkowe:
+  # observe({
+  #   leafletProxy("phys_map") %>%
+  #     addCircles(data = filteredData(),lng = ~long, lat = ~lat)
+  # 
+  # })
+  
+  
+  #Mopje
+  # #render table
+  # output$phys_table <- renderTable({
+  # 
+  #   ]}
+  # #render map
+  # output$phys_chart <- renderPlot({
+  # 
+  #   ]}
+  
+  
+  #Radkowe:  
+ #  output$tabs_title <- renderText({ 
+ #    txt <- input$spec
+ #    print(txt)
+ #  })
+ # 
+ # }
+  
+  output$phys_map <- renderLeaflet({
+    
+    #Set basemap
+    leaflet(phys_data) %>% 
+      addProviderTiles("Stamen.TonerLite") 
   })
   
-  output$phys_table <- renderTable({values$phys_data})
+    #Select Spec
+    selected_spec <- reactive({
+    phys_data[phys_data$spec %in% input$spec, ] 
+  })
   
+  observe({
+    state_popup <- paste0("<strong> Spec: </strong>", 
+                          selected_spec()$spec,
+                          "<br><strong> Year: </strong>",
+                          selected_year()$year)
+    
+    leafletProxy("phys_map", data = selected_spec()) %>%
+      clearMarkerClusters() %>%
+      clearMarkers() %>%
+      addMarkers(~long, ~lat, clusterOptions = markerClusterOptions()) 
+  })
   
+  #Select year
+  selected_year <- reactive({
+    phys_data[phys_data$year %in% input$year, ]
+  })
+  
+  observe({
+    state_popup <- paste0("<strong>spec: </strong>",
+                          selected_spec()$spec,
+                          "<br><strong> Topic: </strong>",
+                          selected_year()$year)
+    
+    leafletProxy("map", data = selected_year()) %>%
+      clearMarkers() %>%
+      clearMarkerClusters() %>%
+      addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
+  })
+}
 
   
-  }
-  
-  
 
-#output$tabs_title <- renderText({ 
-  #"data source: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en"
-#})
-
-
-
-shinyApp(ui, server)
+shinyApp(ui, server, options = list(height = 800))
