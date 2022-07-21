@@ -62,8 +62,7 @@ pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 #table
 phys_table <- phys_data %>%
   group_by(spec) %>%
-  arrange(-number) %>%
-  select(year, number, Country)
+  arrange(-number) 
 
 
 #application interface
@@ -88,99 +87,62 @@ ui <- fluidPage(
           tabPanel("Chart", plotOutput("phys_chart")),
           tabPanel("Table", tableOutput("phys_table")))
         )))
+
+
 #code
 server <- function (input, output, session) {
   
-  #color for spec
-  pal1 <- colorFactor(
-    palette = "Set3",
-    domain = phys_data$var1)
-  
-  #color for year
-  pal2 <- colorFactor(
-    palette = "Spectral",
-   domain = phys_data$var2)
-  
-  #filter data based on selections
-  #dataShow <- reactive({
-   # data <- phys_data
-   # if (input$var1 != "All") {
-    #  data <- data[data$spec == input$var1, ]
-   # }
-   # data
-  #}) 
-  
-  #reactive expression for map
-  map_data <- reactive({
-    phys_data %>%
-      filter(year$phys_data == input$var2) %>%
-      filter(spec$phys_data == input$var1)
-  })  
+  # Reactive expression for the data 
+  specialization <- reactive(input$var1)
+  year <- reactive(input$var2)
   
   
-  #creates the map
- output$phys_map <- renderLeaflet({
-  map <- leaflet(map_data) %>%
-     addTiles() %>%
-     addCircles(
-       lat = ~lat,
-       lng = ~long,
-       label = ~paste("Specialization: ", spec,
-                      "Number of physicians: ", number,
-                      "Country: ", Country,
-                      "Year:", year),
-       color = ~pal1(phys_data[[input$var1]]),
-       fillOpacity = .7,
-       radius = 4,
-       stroke = F) %>%
-   addLegend(
-     position = "bottomright",
-     title = input$var1,
-     pal = pal1,
-     values = ~phys_data[[input$var1]],
-     opacity = .5)
- })
+  output$map <- renderLeaflet({
+    # Use leaflet() here, and only include aspects of the map that
+    # won't need to change dynamically (at least, not unless the
+    # entire map is being torn down and recreated).
+    leaflet(phys_date) %>% 
+      addTiles() %>%
+      addCircles(
+        lat  = ~lat,
+        lng  = ~long,
+        label = ~paste("Specialization: ", spec,
+                       "Number of physicians: ", number,
+                       "Country: ", Country,
+                       "Year:", year),
+        color = ~pal_phys(phys_data[[input$var1]]),
+        fillOpacity = .7,
+        radius = 4,
+        stroke = F) %>%
+      addLegend(
+        position = "bottomright",
+        title = input$var1,
+        pal = pal_phys,
+        values = ~phys_data[[input$var1]],
+        opacity = .5)
+  })
  
- 
-output$phys_table <- renderTable({
-  table <- phys_table %>%
-    group_by(phys_table[[input$var1]]) %>% 
-    count %>%
-    arrange(-n) 
-  colnames(table) <- c(input$var1, "Specialization")
-  table
-})
 
-#reactive expression for plot
-plot_data <- reactive({
-  phys_data %>%
-    filter(year$phys_data == input$var2) %>%
-    filter(spec$phys_data == input$var1)
-})
-
-#render plot
-output$my_plot <- renderPlot({
-  plot_data %>%
-  ggplot (data = phys_data) +
-    geom_point(mapping = aes(x = Country, y = number)) +
-    facet_wrap(~ spec, nrow = 3) +
-    labs(
-      title = "Physician's pecialization in Europe",
-      caption = "(based on data from: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en",
-      x = "Country",
-      y = "Number of physicians") +
-    theme(
-      plot.title = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
-      axis.title.x = element_text(color="steelblue2", size=14, face="bold"),
-      axis.title.y = element_text(color="steelblue2", size=14, face="bold"),
-      plot.caption.position = "plot",
-      legend.position = "none")
+  observe({
+    leafletProxy(
+      "phys_map", 
+      data = filtered_phys_data()
+      ) %>%
+      clearMarkers() %>%
+      addCircleMarkers(weight = 1, color = "#777777",
+                 fillColor = ~pal_phys(spec), fillOpacity = 0.7, popup = ~paste(spec)
+      )
+  })
   
-})
-output$tabs_title <- renderText({ 
-  "data source: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en"
-})
-}
+  
+  }
+  
+  
+
+#output$tabs_title <- renderText({ 
+  #"data source: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en"
+#})
+
 
 
 shinyApp(ui, server)
