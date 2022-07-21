@@ -92,51 +92,25 @@ ui <- fluidPage(
 #code
 server <- function (input, output, session) {
   
-  #reactive
-  rval_phys_data <- reactive({
-    # MODIFY CODE BELOW: Filter and selected date_range.
-   phys_data %>% 
-      filter(
-        spec == input$var1,
-        year == input$var2
-      )
-  })
-  
-  
-  
-  output$map <- renderLeaflet({
-    # Use leaflet() here, and only include aspects of the map that
-    # won't need to change dynamically (at least, not unless the
-    # entire map is being torn down and recreated).
-    leaflet(rval_phys_data) %>% 
-      addTiles() %>%
-      addCircles(
-        lat  = ~lat,
-        lng  = ~long,
-        label = ~paste("Specialization: ", spec,
-                       "Number of physicians: ", number,
-                       "Country: ", Country,
-                       "Year:", year),
-        fillOpacity = .7,
-        radius = 4,
-        stroke = F) %>%
-      addLegend(
-        position = "bottomright",
-        title = specialization,
-        values = ~specialization,
-        opacity = .5)
-  })
- 
+  #reactive table
 
-  observeEvent({
-   req(input$var1, input$var2)
-   leafletProxy("phys_map", data = phys_data()) %>%
-      clearMarkers() %>%
-      addCircleMarkers(weight = 1, color = "#777777",
-                 fillOpacity = 0.7
-      )
+  values <- reactiveValues()
+  values$phys_data <- data.frame(phys_data$spec, phys_data$year, phys_data$Country)
+  newEntry <- observe({
+    if(input$var1 > 0) {
+      newLine <- isolate(input$var1)
+      isolate(values$phys_data <- rbind(values$phys_data, newLine))
+    }
+    if(input$var2 >= 1985) {
+      newLine2 <- isolate(input$var2)
+      isolate(values$phys_data <- rbind(values$phys_data, newLine2))
+    }
   })
   
+  output$phys_table <- renderTable({values$phys_data})
+  
+  
+
   
   }
   
