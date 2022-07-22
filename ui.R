@@ -7,7 +7,7 @@ library("leaflet")
 library("htmlwidgets")
 library("ggplot2")
 library("DT")
-library("rgdal")
+#library("rgdal")
 
 #install.packages("rsconnect")
 library("rsconnect")
@@ -205,7 +205,8 @@ server <- function (input, output) {
     
     #Set basemap
     leaflet(phys_data) %>% 
-      addProviderTiles("Stamen.TonerLite") 
+      addProviderTiles("Stamen.TonerLite") %>%
+      addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
   })
   
     #Select Spec
