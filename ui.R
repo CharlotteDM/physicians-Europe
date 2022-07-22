@@ -209,43 +209,56 @@ server <- function (input, output) {
       addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
   })
   
-    #Select Spec
-    selected_spec <- reactive({
-    phys_data[phys_data$spec %in% input$spec, ] 
-  })
   
-  observe({
-    state_popup <- paste0("<strong> Spec: </strong>", 
-                          selected_spec()$spec,
-                          "<br><strong> Year: </strong>",
-                          selected_year()$year)
+    #select spec & year
+  selected_spec_year <- reactive({
+     phys_data[phys_data$spec %in% input$spec, ] &
+      phys_data[phys_data$year %in% input$year, ] 
+    })
+  
+    #make map
+    leafletProxy("phys_map", data = selected_spec_year()) %>%
+    clearMarkers() %>%
+    clearMarkerClusters() %>%
+    addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
     
-    #make map
-    leafletProxy("phys_map", data = selected_spec()) %>%
-      clearMarkerClusters() %>%
-      clearMarkers() %>%
-      addMarkers(~long, ~lat, clusterOptions = markerClusterOptions()) 
-  })
-  
-  #Select year
-  selected_year <- reactive({
-    phys_data <- phys_data[!is.na(phys_data$year), ]
-    phys_data[phys_data$year %in% input$year, ]
-  })
-  
-  observe({
-    state_popup <- paste0("<strong> Spec: </strong>",
-                          selected_spec()$spec,
-                          "<br><strong> Year: </strong>",
-                          selected_year()$year)
-    #make map
-    leafletProxy("phys_map", data = selected_year()) %>%
-      clearMarkers() %>%
-      clearMarkerClusters() %>%
-      addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
-  })
+  #   #Select Spec
+  #   selected_spec <- reactive({
+  #   phys_data[phys_data$spec %in% input$spec, ] 
+  # })
+  # 
+  # observe({
+  #   state_popup <- paste0("<strong> Spec: </strong>", 
+  #                         selected_spec()$spec,
+  #                         "<br><strong> Year: </strong>",
+  #                         selected_year()$year)
+  #   
+  #   #make map
+  #   leafletProxy("phys_map", data = selected_spec()) %>%
+  #     clearMarkerClusters() %>%
+  #     clearMarkers() %>%
+  #     addMarkers(~long, ~lat, clusterOptions = markerClusterOptions()) 
+  # })
+  # 
+  # #Select year
+  # selected_year <- reactive({
+  #   phys_data <- phys_data[!is.na(phys_data$year), ]
+  #   phys_data[phys_data$year %in% input$year, ]
+  # })
+  # 
+  # observe({
+  #   state_popup <- paste0("<strong> Spec: </strong>",
+  #                         selected_spec()$spec,
+  #                         "<br><strong> Year: </strong>",
+  #                         selected_year()$year)
+  #   #make map
+  #   leafletProxy("phys_map", data = selected_year()) %>%
+  #     clearMarkers() %>%
+  #     clearMarkerClusters() %>%
+  #     addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
+  # })
 }
 
-  
+  ?
 
 shinyApp(ui, server, options = list(height = 800))
