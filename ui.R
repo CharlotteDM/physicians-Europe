@@ -227,6 +227,7 @@ server <- function (input, output) {
   
   #Select year
   selected_year <- reactive({
+    phys_data <- phys_data[!is.na(phys_data$year), ]
     phys_data[phys_data$year %in% input$year, ]
   })
   
