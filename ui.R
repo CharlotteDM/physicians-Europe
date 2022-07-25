@@ -111,8 +111,7 @@ server <- function (input, output) {
     
     observe({
       leafletProxy("phys_map", data = selectedData()) %>%
-        clearShapes() %>%
-        addPolygons(weight=2, col="black", opacity=0.5) 
+        clearShapes()
     })
     
   })
