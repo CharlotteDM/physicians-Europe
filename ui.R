@@ -135,18 +135,7 @@ server <- function (input, output) {
    })
    
 
-#####
-  #  #static map - działa
-  #  map_first <- leaflet() %>%
-  #   addProviderTiles(providers$CartoDB) %>%
-  #    setView(lng = 9.0000,
-  #            lat = 53.0000, zoom = 3)
-  # 
-  # #static output map - działa
-  # output$phys_map <- renderLeaflet({
-  # map_first
-  # })
-  #######
+
    
    
    output$phys_map <- renderLeaflet({
@@ -157,38 +146,20 @@ server <- function (input, output) {
        addCircleMarkers(data = filteredData(),
                         lat = ~lat, 
                         lng = ~long, 
-                        label = ~paste("Specialization: ", spec,
-                                       "Number of physicians: ", number,
-                                       "Country: ", Country,
+                        label = ~paste("Specialization: ", spec,"<br>",
+                                       "Number of physicians: ", number, "<br>",
+                                       "Country: ", Country, "<br>",
                                        "Year:", year),
+                        labelOptions = labelOptions(style = list(
+                                                      "color" = "navy",
+                                                      "font-family" = "serif",
+                                                      "font-style" = "italic",
+                                                      "font-size" = "12px")),
                         fillOpacity = .7,
                         radius = 8,
                         stroke = F)
    })
-       # add legend     
-   #     addLegend(
-   #       "bottomleft", # legend position
-   #       pal = pal_phys, # color palette
-   #       values = ~spec, # legend values
-   #       opacity = 1,
-   #       title = "Specialization")
-   # }) 
-   
-   # observe(leafletProxy("phys_map", data = filtered_data()) %>%
-   #           addProviderTiles("providers$CartoDB") %>%
-   #           clearMarkers() %>%
-   #           addCircleMarkers(lng = ~long,
-   #                            lat = ~lat,
-   #                            color = ~pal_phys(spec),
-   #                            popup = paste("Specialization:", phys_data$spec, "<br>",
-   #                                          "Year:", phys_data$year, "<br>",
-   #                                          "Number:", phys_data$number)))
-   
-   
 
-   
-   
-   
    
 }
 
