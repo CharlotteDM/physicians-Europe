@@ -113,7 +113,7 @@ server <- function (input, output) {
       clearMarkers() %>%
       addCircleMarkers(data = phys_data,
                        color = ~pal_phys(input$spec),
-                       label = paste(input$spec, ",", input$year, ", number:", phys_data$number))})
+                       label = paste(input$spec, ", year:", input$year, ", number:", phys_data$number))})
   
 }
 
