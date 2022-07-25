@@ -93,35 +93,22 @@ ui <- fluidPage(
 
 #code
 server <- function (input, output) {
-  # selected_variables <- reactive({
-  #   phys_data[phys_data$spec == input$spec, ] ~
-  #     phys_data[phys_data$year == input$year, ]
-  # })
+
   
    pal_phys <- colorFactor(palette = "Set3", domain = phys_data[["spec"]])
   
    map_first <- leaflet() %>%
-    addProviderTiles(providers$CartoDB) 
+    addProviderTiles(providers$CartoDB) %>%
+     setView(lng = 9.0000,
+             lat = 53.0000, zoom = 3)
   
-   # selectedData <- reactive({
-   #  phys_data %>% 
-   #    dplyr::filter(spec %in% input$spec, 
-   #                  year %in% input$year
-   #    )})
   
    output$phys_map <- renderLeaflet({
    map_first
    })
   
-  # output$phys_map <- renderLeaflet({
-  #   leaflet(isolate(selectedData())) %>%
-  #     addTiles() %>%
-  #     addMarkers(map, lng = ~phys_data$long, lat = ~phys_data$lat,
-  #                clusterOptions = markerClusterOptions(),
-  #                label = paste(selectedData()$spec, ",", selectedData()$year))})
 
-
-  observe({
+   observe({
     leafletProxy("phys_map", data = phys_data) %>%
       clearMarkers() %>%
       addCircleMarkers(data = phys_data,
@@ -129,181 +116,7 @@ server <- function (input, output) {
                        label = paste(input$spec, ",", input$year, ", number:", phys_data$number))})
   
 }
-  
-  #Radkowe:
-  # filteredData <- reactive({
-  #   phys_data[phys_data$spec == input$spec[1],]
-  #   #phys_data[phys_data$year == input$year[1],]
-  # })
 
-
-
-  #moje:
-  # filtered_data <- reactive({
-  #   phys_data %>%
-  #     filter(
-  #            Specialization %in% input$spec[1],
-  #            Year %in% input$year[1]
-  #     )
-  # })
-
-
-
-
-
-  #render map
-  #Radkowe:
-  # output$phys_map <- renderLeaflet({
-  #
-  #    pal_phys <- colorFactor(
-  #    palette = "Set3",
-  #    domain = input$spec
-  #    )
-  #
-  #   leaflet(data = phys_data()) %>%
-  #   addProviderTiles("Stamen.TonerLite") %>%
-  #   addCircleMarkers(
-  #   lat = ~lat,
-  #   lng = ~long,
-  #   label = ~paste("Specialization: ", spec,
-  #                  "Number of physicians: ", number,
-  #                  "Country: ", Country,
-  #                  "Year:", year),
-  #   color = ~pal_phys(input$spec),
-  #   fillOpacity = .7,
-  #   radius = 4,
-  #   stroke = F) %>%
-  # addLegend(
-  #   position = "bottomright",
-  #   title = input$spec,
-  #   pal = pal_phys,
-  #   values = input$spec,
-  #   opacity = .5)
-  #    })
-
-
-  #Moje
-  # pal_phys <- colorFactor(
-  #   palette = "Set3",
-  #   domain = input$spec
-  #   )
-
-  #moje
-  # output$phys_map <- renderLeaflet({
-  #   leaflet(data = phys_data()) %>%
-  #   addProviderTiles("Stamen.TonerLite")
-  # })
-
-
-  #Moje
-  # observe({leafletProxy("phys_map") %>%
-  #           addCircles(data = filteredData(),
-  #                      lng = ~long, lat = ~lat,
-  #                      color = pal_phys,
-  #                      label = ~paste("Specialization: ", spec,
-  #                                     "Number of physicians: ", number,
-  #                                     "Country: ", Country,
-  #                                     "Year:", year)
-  #
-  #                      )})
-
-
-  #Radkowe:
-  # observe({
-  #   leafletProxy("phys_map") %>%
-  #     addCircles(data = filteredData(),lng = ~long, lat = ~lat)
-  #
-  # })
-
-
-  #Mopje
-  # #render table
-  # output$phys_table <- renderTable({
-  #
-  #   ]}
-  # #render map
-  # output$phys_chart <- renderPlot({
-  #
-  #   ]}
-
-
-  #Radkowe:
- #  output$tabs_title <- renderText({
- #    txt <- input$spec
- #    print(txt)
- #  })
- #
- # }
-  
-  
-  #              #select spec & year
-  # selected_spec_year <- reactive({
-  #   phys_data[phys_data$spec %in% input$spec, ] &
-  #     phys_data[phys_data$year %in% input$year, ]
-  # })
-  # 
-  #              #map
-  # output$phys_map <- renderLeaflet({
-  # #   #Set basemap
-  #   leaflet(phys_data) %>%
-  #     addProviderTiles("Stamen.TonerLite") %>%
-  #     addMarkers(
-  #       data = phys_data[phys_data$spec == input$spec, ],
-  #       ~long, 
-  #       ~lat, 
-  #       clusterOptions = markerClusterOptions())
-  # })
-  # 
-
-  
-
-    #make map
-    # leafletProxy("phys_map", data = selected_spec_year()) %>%
-    # clearMarkers() %>%
-    # clearMarkerClusters() %>%
-    # addMarkers(~long, ~lat, clusterOptions = markerClusterOptions()) %>%
-    # addLayersControl(
-    #     overlayGroups = unique(phys_data$spec),
-    #     options = layersControlOptions(collapsed = FALSE))
-
-  #   #Select Spec
-  #   selected_spec <- reactive({
-  #   phys_data[phys_data$spec %in% input$spec, ]
-  # })
-  #
-  # observe({
-  #   state_popup <- paste0("<strong> Spec: </strong>",
-  #                         selected_spec()$spec,
-  #                         "<br><strong> Year: </strong>",
-  #                         selected_year()$year)
-  #
-  #   #make map
-  #   leafletProxy("phys_map", data = selected_spec()) %>%
-  #     clearMarkerClusters() %>%
-  #     clearMarkers() %>%
-  #     addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
-  # })
-  #
-  # #Select year
-  # selected_year <- reactive({
-  #   phys_data <- phys_data[!is.na(phys_data$year), ]
-  #   phys_data[phys_data$year %in% input$year, ]
-  # })
-  #
-  # observe({
-  #   state_popup <- paste0("<strong> Spec: </strong>",
-  #                         selected_spec()$spec,
-  #                         "<br><strong> Year: </strong>",
-  #                         selected_year()$year)
-  #   #make map
-  #   leafletProxy("phys_map", data = selected_year()) %>%
-  #     clearMarkers() %>%
-  #     clearMarkerClusters() %>%
-  #     addMarkers(~long, ~lat, clusterOptions = markerClusterOptions())
-  # })
-
-
-  
 
 shinyApp(ui, server, options = list(height = 800))
 
