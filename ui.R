@@ -146,16 +146,17 @@ server <- function (input, output) {
        addCircleMarkers(data = filteredData(),
                         lat = ~lat, 
                         lng = ~long, 
-                        label = ~paste("Specialization: ", spec,"<br>",
-                                       "Number of physicians: ", number, "<br>",
-                                       "Country: ", Country, "<br>",
-                                       "Year:", year),
+                        label = ~paste("</br>Specialization:", spec,
+                                       "</br>Number of physicians:", number, 
+                                       "</br>Country: ", Country, 
+                                       "</br>Year:", year),
                         labelOptions = labelOptions(style = list(
                                                       "color" = "navy",
                                                       "font-family" = "serif",
                                                       "font-style" = "italic",
                                                       "font-size" = "12px")),
                         fillOpacity = .7,
+                      
                         radius = 8,
                         stroke = F)
    })
