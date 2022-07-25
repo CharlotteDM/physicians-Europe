@@ -152,6 +152,8 @@ server <- function (input, output) {
    output$phys_map <- renderLeaflet({
      leaflet() %>%
        addProviderTiles("Stamen.TonerLite") %>%
+       setView(lng = 9.0000,
+               lat = 53.0000, zoom = 3) %>%
        addCircleMarkers(data = filteredData(),
                         lat = ~lat, 
                         lng = ~long, 
