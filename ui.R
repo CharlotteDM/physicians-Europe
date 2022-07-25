@@ -98,23 +98,35 @@ server <- function (input, output) {
   #     phys_data[phys_data$year == input$year, ]
   # })
   
-  output$phys_map <- renderLeaflet({
-    leaflet(data = phys_data) %>%
-      addTiles()})
+   pal_phys <- colorFactor(palette = "Set3", domain = phys_data[["spec"]])
   
-  selectedData <- reactive({
-    req(input$spec)
-    req(input$year)
-    phys_data %>% 
-      dplyr::filter(spec %in% input$spec & year%in% input$year
-      )
-    
-    observe({
-      leafletProxy("phys_map", data = selectedData()) %>%
-        clearShapes()
-    })
-    
-  })
+   map_first <- leaflet() %>%
+    addProviderTiles(providers$CartoDB) 
+  
+   # selectedData <- reactive({
+   #  phys_data %>% 
+   #    dplyr::filter(spec %in% input$spec, 
+   #                  year %in% input$year
+   #    )})
+  
+   output$phys_map <- renderLeaflet({
+   map_first
+   })
+  
+  # output$phys_map <- renderLeaflet({
+  #   leaflet(isolate(selectedData())) %>%
+  #     addTiles() %>%
+  #     addMarkers(map, lng = ~phys_data$long, lat = ~phys_data$lat,
+  #                clusterOptions = markerClusterOptions(),
+  #                label = paste(selectedData()$spec, ",", selectedData()$year))})
+
+
+  observe({
+    leafletProxy("phys_map", data = phys_data) %>%
+      clearMarkers() %>%
+      addCircleMarkers(data = phys_data,
+                       color = ~pal_phys(input$spec),
+                       label = paste(input$spec, ",", input$year, ", number:", phys_data$number))})
   
 }
   
