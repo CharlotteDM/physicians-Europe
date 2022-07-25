@@ -106,11 +106,13 @@ ui <- fluidPage(
       selectInput(
         inputId = "spec",
         label = "Specialization:",
-        choices = unique(phys_data$spec)),
+        choices = unique(phys_data$spec),
+        selected = "GEN"),
       selectInput(
         inputId = "year",
         label = "Year:",
-        choices = 1985:2020)
+        choices = 1985:2020,
+        selected = 2020)
       ),
   mainPanel(
           textOutput("tabs_title"),
@@ -123,19 +125,13 @@ ui <- fluidPage(
   )
 )
 
-
 #code
-server <- function (input, output, session) {
+server <- function (input, output) {
 
-   #colors for specializations
-   pal_phys <- colorFactor(palette = "Set3", domain = phys_data[["spec"]])
-   
-   
-  #  #######ODTAD DZIAŁA
    ###filtered_data
-   filtered_data <- reactive({
-     phys_data[phys_data$spec == input$spec, ]
-     phys_data[phys_data$year == input$year, ] 
+   filteredData <- reactive({ 
+     filter(phys_data, phys_data$spec == input$spec, 
+            phys_data$year == input$year) 
    })
    
 
@@ -154,40 +150,39 @@ server <- function (input, output, session) {
    
    
    output$phys_map <- renderLeaflet({
-     leaflet(data = phys_data) %>%
-       addTiles() %>%
-       addMarkers() %>%
-       
+     leaflet() %>%
+       addProviderTiles("Stamen.TonerLite") %>%
+       addCircleMarkers(data = filteredData(),
+                        lat = ~lat, 
+                        lng = ~long, 
+                        label = ~paste("Specialization: ", spec,
+                                       "Number of physicians: ", number,
+                                       "Country: ", Country,
+                                       "Year:", year),
+                        fillOpacity = .7,
+                        radius = 8,
+                        stroke = F)
+   })
        # add legend     
-       addLegend(
-         "bottomleft", # legend position
-         pal = pal_phys, # color palette
-         values = ~spec, # legend values
-         opacity = 1,
-         title = "Specialization")
-   }) 
+   #     addLegend(
+   #       "bottomleft", # legend position
+   #       pal = pal_phys, # color palette
+   #       values = ~spec, # legend values
+   #       opacity = 1,
+   #       title = "Specialization")
+   # }) 
    
-   observe(leafletProxy("phys_map", data = filtered_data()) %>%
-             addProviderTiles("providers$CartoDB") %>%
-             clearMarkers() %>%
-             addCircleMarkers(lng = ~long,
-                              lat = ~lat,
-                              color = ~pal_phys(spec),
-                              popup = paste("Specialization:", phys_data$spec, "<br>",
-                                            "Year:", phys_data$year, "<br>",
-                                            "Number:", phys_data$number)))
+   # observe(leafletProxy("phys_map", data = filtered_data()) %>%
+   #           addProviderTiles("providers$CartoDB") %>%
+   #           clearMarkers() %>%
+   #           addCircleMarkers(lng = ~long,
+   #                            lat = ~lat,
+   #                            color = ~pal_phys(spec),
+   #                            popup = paste("Specialization:", phys_data$spec, "<br>",
+   #                                          "Year:", phys_data$year, "<br>",
+   #                                          "Number:", phys_data$number)))
    
    
-  ###### 
-  # #dynamic map - działa
-   # observe({
-   #  leafletProxy("phys_map", data = filtered_data) %>%
-   #    clearMarkers() %>%
-   #    addCircleMarkers(data = phys_data,
-   #                     lng = ~long, lat = ~lat,
-   #                     color = ~pal_phys(input$spec),
-   #                     label = paste(input$spec, ", year:", input$year, ", number:", phys_data$number))
-   #   })
 
    
    
