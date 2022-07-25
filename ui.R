@@ -48,6 +48,45 @@ names(phys_data)[names(phys_data) == 'TIME_PERIOD'] <- 'year'
 names(phys_data)[names(phys_data) == 'OBS_VALUE'] <- 'number'
 names(phys_data)[names(phys_data) == 'med_spec'] <- 'spec'
 
+#changes names of the specializations
+phys_data$spec[phys_data$spec == "GEN"] <- "Generalist Medical Practitioners"
+phys_data$spec[phys_data$spec == "GEN_PRAC"] <- "Generalist Practitioners"
+phys_data$spec[phys_data$spec == "GEN_OTH"] <- "Generalist Other Medical Practitioners"
+phys_data$spec[phys_data$spec == "SPEC"] <- "Specialist Medical Practitioners"
+phys_data$spec[phys_data$spec == "PAED"] <- "General Paediatricians"
+phys_data$spec[phys_data$spec == "GYN"] <- "Gynaecologists and Obstetricians"
+phys_data$spec[phys_data$spec == "PSY"] <- "Psychiatrists"
+phys_data$spec[phys_data$spec == "MED"] <- "Medical group of specialists"
+phys_data$spec[phys_data$spec == "MED_INT"] <- "Internal Medicine"
+phys_data$spec[phys_data$spec == "MED_CAR"] <- "Cardiology"
+phys_data$spec[phys_data$spec == "MED_END"] <- "Endocrinology"
+phys_data$spec[phys_data$spec == "MED_GAS"] <- "Gastroenterology"
+phys_data$spec[phys_data$spec == "MED_RES"] <- "Respiratory Medicine"
+phys_data$spec[phys_data$spec == "ONC"] <- "Oncology"
+phys_data$spec[phys_data$spec == "MEN_IMM"] <- "Immunology"
+phys_data$spec[phys_data$spec == "MED_NEU"] <- "Neurology"
+phys_data$spec[phys_data$spec == "MED_ORL"] <- "Otorhinolaryngology"
+phys_data$spec[phys_data$spec == "MED_RAD"] <- "Radiology"
+phys_data$spec[phys_data$spec == "MED_MIC"] <- "Microbiology-bacteriology"
+phys_data$spec[phys_data$spec == "MED_HAE"] <- "Haematology"
+phys_data$spec[phys_data$spec == "MED_DER"] <- "Dermatology"
+phys_data$spec[phys_data$spec == "MED_PAT"] <- "Pathology"
+phys_data$spec[phys_data$spec == "MEN_OCC"] <- "Occupational Medicine"
+phys_data$spec[phys_data$spec == "SURG"] <- "Surgical group of specialists"
+phys_data$spec[phys_data$spec == "SURG_GEN"] <- "General Surgery"
+phys_data$spec[phys_data$spec == "SURG_NEU"] <- "Neurological Surgery"
+phys_data$spec[phys_data$spec == "SURG_PLA"] <- "Plastic Surgery"
+phys_data$spec[phys_data$spec == "SURG_OPH"] <- "Opthamology"
+phys_data$spec[phys_data$spec == "SURG_ORT"] <- "Orthopedics"
+phys_data$spec[phys_data$spec == "SURG_THO"] <- "Thoracic Surgery"
+phys_data$spec[phys_data$spec == "SURG_VAS"] <- "Vascular Surgery"
+phys_data$spec[phys_data$spec == "SURG_ANE"] <- "Anesthesiology and Intensive Care"
+phys_data$spec[phys_data$spec == "SURG_URO"] <- "Urology"
+phys_data$spec[phys_data$spec == "SURG_EME"] <- "Accident and Emergency Medicine"
+phys_data$spec[phys_data$spec == "OTH"] <- "Other Specialist not elsewhere classified"
+
+
+
 #removes rows with NA
 phys_data <- na.omit(phys_data)
 
@@ -56,12 +95,6 @@ pal_phys <- colorFactor(palette = "Set3", domain = phys_data[["spec"]])
 pal_year <- colorFactor(palette = "Spectral", domain = phys_data[["year"]])
 pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 #pal_phys <- colorRampPalette(brewer.pal(9,"YlOrRd"))
-
-
-#table
-# phys_table <- phys_data %>%
-#   group_by(spec) %>%
-#   arrange(-number) 
 
 
 #application interface
@@ -92,29 +125,74 @@ ui <- fluidPage(
 
 
 #code
-server <- function (input, output) {
+server <- function (input, output, session) {
 
-  
+   #colors for specializations
    pal_phys <- colorFactor(palette = "Set3", domain = phys_data[["spec"]])
-  
-   map_first <- leaflet() %>%
-    addProviderTiles(providers$CartoDB) %>%
-     setView(lng = 9.0000,
-             lat = 53.0000, zoom = 3)
-  
-  
-   output$phys_map <- renderLeaflet({
-   map_first
+   
+   
+  #  #######ODTAD DZIAŁA
+   ###filtered_data
+   filtered_data <- reactive({
+     phys_data[phys_data$spec == input$spec, ]
+     phys_data[phys_data$year == input$year, ] 
    })
-  
+   
 
-   observe({
-    leafletProxy("phys_map", data = phys_data) %>%
-      clearMarkers() %>%
-      addCircleMarkers(data = phys_data,
-                       color = ~pal_phys(input$spec),
-                       label = paste(input$spec, ", year:", input$year, ", number:", phys_data$number))})
-  
+#####
+  #  #static map - działa
+  #  map_first <- leaflet() %>%
+  #   addProviderTiles(providers$CartoDB) %>%
+  #    setView(lng = 9.0000,
+  #            lat = 53.0000, zoom = 3)
+  # 
+  # #static output map - działa
+  # output$phys_map <- renderLeaflet({
+  # map_first
+  # })
+  #######
+   
+   
+   output$phys_map <- renderLeaflet({
+     leaflet(data = phys_data) %>%
+       addTiles() %>%
+       addMarkers() %>%
+       
+       # add legend     
+       addLegend(
+         "bottomleft", # legend position
+         pal = pal_phys, # color palette
+         values = ~spec, # legend values
+         opacity = 1,
+         title = "Specialization")
+   }) 
+   
+   observe(leafletProxy("phys_map", data = filtered_data()) %>%
+             addProviderTiles("providers$CartoDB") %>%
+             clearMarkers() %>%
+             addCircleMarkers(lng = ~long,
+                              lat = ~lat,
+                              color = ~pal_phys(spec),
+                              popup = paste("Specialization:", phys_data$spec, "<br>",
+                                            "Year:", phys_data$year, "<br>",
+                                            "Number:", phys_data$number)))
+   
+   
+  ###### 
+  # #dynamic map - działa
+   # observe({
+   #  leafletProxy("phys_map", data = filtered_data) %>%
+   #    clearMarkers() %>%
+   #    addCircleMarkers(data = phys_data,
+   #                     lng = ~long, lat = ~lat,
+   #                     color = ~pal_phys(input$spec),
+   #                     label = paste(input$spec, ", year:", input$year, ", number:", phys_data$number))
+   #   })
+
+   
+   
+   
+   
 }
 
 
