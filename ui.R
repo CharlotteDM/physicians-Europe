@@ -5,6 +5,7 @@ library("RColorBrewer")
 library("rstudioapi")
 library("leaflet")
 library("htmlwidgets")
+library("htmltools")
 library("ggplot2")
 library("DT")
 #library("rgdal")
@@ -62,7 +63,7 @@ phys_data$spec[phys_data$spec == "MED_CAR"] <- "Cardiology"
 phys_data$spec[phys_data$spec == "MED_END"] <- "Endocrinology"
 phys_data$spec[phys_data$spec == "MED_GAS"] <- "Gastroenterology"
 phys_data$spec[phys_data$spec == "MED_RES"] <- "Respiratory Medicine"
-phys_data$spec[phys_data$spec == "ONC"] <- "Oncology"
+phys_data$spec[phys_data$spec == "MED_ONC"] <- "Oncology"
 phys_data$spec[phys_data$spec == "MED_IMM"] <- "Immunology"
 phys_data$spec[phys_data$spec == "MED_NEU"] <- "Neurology"
 phys_data$spec[phys_data$spec == "MED_ORL"] <- "Otorhinolaryngology"
@@ -84,7 +85,7 @@ phys_data$spec[phys_data$spec == "SURG_ANE"] <- "Anesthesiology and Intensive Ca
 phys_data$spec[phys_data$spec == "SURG_URO"] <- "Urology"
 phys_data$spec[phys_data$spec == "SURG_EME"] <- "Accident and Emergency Medicine"
 phys_data$spec[phys_data$spec == "OTH"] <- "Other Specialist not elsewhere classified"
-
+phys_data$spec[phys_data$spec == "NSP"] <- "Medical Doctors not futher defined"
 
 
 #removes rows with NA
