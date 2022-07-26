@@ -166,7 +166,7 @@ server <- function (input, output) {
    output$phys_chart <- renderPlot({
      ggplot(data=filteredData(), aes_string(x= "Country", y = "number", fill = "Country"))   +
        geom_bar(stat="identity") +
-       geom_label(aes(label = number), alpha = 0.5) +
+       geom_label(aes(label = number), alpha = 0.5, show.legend = FALSE) +
        coord_flip() +
        labs(title=input$spec, 
             subtitle = input$year,
