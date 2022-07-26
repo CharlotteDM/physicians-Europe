@@ -147,10 +147,10 @@ server <- function (input, output) {
        addCircleMarkers(data = filteredData(),
                         lat = ~lat, 
                         lng = ~long, 
-                        label = ~paste("</br>Specialization:", spec,
-                                       "</br>Number of physicians:", number, 
-                                       "</br>Country: ", Country, 
-                                       "</br>Year:", year),
+                        label = ~paste("<strong>Specialization:", spec,
+                                       "</strong><br>Number of physicians:", number, 
+                                       "</strong><br>Country: ", Country, 
+                                       "</strong><br>Year:", year),
                         labelOptions = labelOptions(style = list(
                                                       "color" = "navy",
                                                       "font-family" = "serif",
@@ -162,6 +162,20 @@ server <- function (input, output) {
                         stroke = F)
    })
 
+   #chart
+   output$phys_chart <- renderPlot({
+     ggplot(data=filteredData(), aes_string(x="Country", y = "number"))   +
+       geom_bar(stat="identity") +
+       labs(title=input$spec, y ="Number") +
+       theme_classic() +
+       theme(plot.title = element_text(hjust = 0.5))
+   })
+   
+   
+   #table
+   output$phys_table <- renderTable({
+     phys_data
+     })
    
 }
 
