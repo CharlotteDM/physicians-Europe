@@ -169,7 +169,7 @@ server <- function (input, output) {
      
        coord_flip() +
        labs(title=input$spec, 
-            y ="Number") +
+            y ="Number of physicians") +
        theme_classic() +
        theme(plot.title = element_text(hjust = 0.5)) 
        
