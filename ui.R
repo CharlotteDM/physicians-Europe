@@ -99,6 +99,9 @@ pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 #pal_phys <- colorRampPalette(brewer.pal(9,"YlOrRd"))
 
 
+new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
+
+
 #application interface
 ui <- fluidPage(
   titlePanel(p("Physicians by medical specialization 1985-2020 in EU")),
@@ -167,6 +170,7 @@ server <- function (input, output) {
        geom_bar(stat="identity") +
        geom_label(aes(label = number), alpha = 0.5, show.legend = FALSE) +
        coord_flip() +
+       
        labs(title=input$spec, 
             subtitle = input$year,
             y ="Number of physicians") +
@@ -181,13 +185,8 @@ server <- function (input, output) {
    
    ###table
    
-   #choose columns to display
-   
-   new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
-   
-   output$phys_table <- DT::renderDataTable({
-     new_phys_data
-     })
+   tableOutput("phys_table")
+   output$phys_table <- renderTable({new_phys_data})
 
    
 }
