@@ -11,6 +11,8 @@ library("DT")
 #library("plotly")
 #library("rgdal")
 
+#install.packages("bslib")
+library("bslib")
 #install.packages("rsconnect")
 library("rsconnect")
 #install.packages("shinyWidgets")
@@ -104,9 +106,10 @@ new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 
 #application interface
 ui <- fluidPage(
-  fluidRow(column(2, "sidebar"), column(10, "main")),
+  # fluidRow(column(2, "sidebar"), column(10, "main")),
   titlePanel(p("Physicians by medical specialization 1985-2020 in EU")),
-  theme = shinytheme("sandstone"),
+  # theme = shinytheme("sandstone"),
+  theme = bs_theme(version = 4, bootswatch = "minty"),
   sidebarLayout(
     sidebarPanel(
       selectInput(
