@@ -8,6 +8,7 @@ library("htmlwidgets")
 library("htmltools")
 library("ggplot2")
 library("DT")
+#library("plotly")
 #library("rgdal")
 
 #install.packages("rsconnect")
@@ -129,16 +130,14 @@ ui <- fluidPage(
 #code
 server <- function (input, output) {
 
-   ###filtered_data
+   #filtered_data
    filteredData <- reactive({ 
      filter(phys_data, phys_data$spec == input$spec, 
             phys_data$year == input$year) 
    })
    
-
-
-   
-   
+ 
+   #map
    output$phys_map <- renderLeaflet({
      leaflet() %>%
        addProviderTiles("Stamen.TonerLite") %>%
@@ -180,12 +179,16 @@ server <- function (input, output) {
    })
    
    
-   #table
-   output$phys_table <- renderTable({
-     phys_data
+   ###table
+   
+   #choose columns to display
+   
+   new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
+   
+   output$phys_table <- DT::renderDataTable({
+     new_phys_data
      })
 
-   
    
 }
 
