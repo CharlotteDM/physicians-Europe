@@ -164,14 +164,16 @@ server <- function (input, output) {
 
    #chart
    output$phys_chart <- renderPlot({
-     ggplot(data=filteredData(), aes_string(x="Country", y = "number", fill = "Country"))   +
+     ggplot(data=filteredData(), aes_string(x= "Country", y = "number", fill = "Country"))   +
        geom_bar(stat="identity") +
-     
+       #geom_text() +
        coord_flip() +
        labs(title=input$spec, 
+            subtitle = input$year,
             y ="Number of physicians") +
        theme_classic() +
        theme(plot.title = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
+             plot.subtitle = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
              axis.title.x = element_text(color="royalblue4", size=14, face="bold"),
              axis.title.y = element_text(color="royalblue4", size=14, face="bold")) 
        
@@ -182,6 +184,8 @@ server <- function (input, output) {
    output$phys_table <- renderTable({
      phys_data
      })
+
+   
    
 }
 
