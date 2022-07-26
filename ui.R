@@ -125,7 +125,7 @@ ui <- fluidPage(
           tabsetPanel(
           tabPanel("Map", leafletOutput("phys_map")),
           tabPanel("Chart", plotOutput("phys_chart")),
-          tabPanel("Table", tableOutput("phys_table")))
+          tabPanel("Table", DT::dataTableOutput("phys_table")))
       )
   )
 )
@@ -185,9 +185,11 @@ server <- function (input, output) {
    
    ###table
    
-   tableOutput("phys_table")
-   output$phys_table <- renderTable({new_phys_data})
-
+   # tableOutput("phys_table")
+   # output$phys_table <- renderTable({new_phys_data})
+     # DT::dataTableOutput("phys_table")
+     output$phys_table <- DT::renderDataTable({
+       datatable(new_phys_data)})
    
 }
 
