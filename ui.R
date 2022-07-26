@@ -171,7 +171,9 @@ server <- function (input, output) {
        labs(title=input$spec, 
             y ="Number of physicians") +
        theme_classic() +
-       theme(plot.title = element_text(hjust = 0.5)) 
+       theme(plot.title = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
+             axis.title.x = element_text(color="royalblue4", size=14, face="bold"),
+             axis.title.y = element_text(color="royalblue4", size=14, face="bold")) 
        
    })
    
