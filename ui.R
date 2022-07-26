@@ -104,6 +104,7 @@ new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 
 #application interface
 ui <- fluidPage(
+  fluidRow(column(2, "sidebar"), column(10, "main")),
   titlePanel(p("Physicians by medical specialization 1985-2020 in EU")),
   theme = shinytheme("sandstone"),
   sidebarLayout(
@@ -113,6 +114,7 @@ ui <- fluidPage(
         label = "Specialization:",
         choices = unique(phys_data$spec),
         selected = "GEN"),
+      br(),
       selectInput(
         inputId = "year",
         label = "Year:",
@@ -135,6 +137,12 @@ server <- function (input, output) {
 
    #filtered_data
    filteredData <- reactive({ 
+     # req(input$spec != 0)
+     # req(input$year != 0)
+     
+     # validate(need(input$spec, message = FALSE))
+     # validate(need(input$year, message = FALSE))
+              
      filter(phys_data, phys_data$spec == input$spec, 
             phys_data$year == input$year) 
    })
@@ -184,10 +192,7 @@ server <- function (input, output) {
    
    
    ###table
-   
-   # tableOutput("phys_table")
-   # output$phys_table <- renderTable({new_phys_data})
-     # DT::dataTableOutput("phys_table")
+
      output$phys_table <- DT::renderDataTable({
        datatable(new_phys_data)})
    
