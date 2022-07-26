@@ -106,9 +106,8 @@ new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 
 #application interface
 ui <- fluidPage(
-  # fluidRow(column(2, "sidebar"), column(10, "main")),
+  #fluidRow(column(2, "sidebar"), column(10, "main")),
   titlePanel(p("Physicians by medical specialization 1985-2020 in EU")),
-  # theme = shinytheme("sandstone"),
   theme = bs_theme(version = 4, bootswatch = "minty"),
   sidebarLayout(
     sidebarPanel(
@@ -185,7 +184,7 @@ server <- function (input, output) {
        labs(title=input$spec, 
             subtitle = input$year,
             y ="Number of physicians") +
-       theme_classic() +
+       theme_light() +
        theme(plot.title = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
              plot.subtitle = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
              axis.title.x = element_text(color="royalblue4", size=14, face="bold"),
