@@ -128,7 +128,7 @@ ui <- fluidPage(
           strong("For more information go to the section:"),
           tabsetPanel(
           tabPanel("Map", leafletOutput("phys_map")),
-          tabPanel("Chart", plotOutput("phys_chart", height = 500, width = 800)),
+          tabPanel("Chart", plotOutput("phys_chart", height = 600, width = 800)),
           tabPanel("Table", DT::dataTableOutput("phys_table")))
       )
   )
@@ -189,7 +189,8 @@ server <- function (input, output) {
              plot.subtitle = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
              axis.title.x = element_text(color="royalblue4", size=14, face="bold"),
              axis.title.y = element_text(color="royalblue4", size=14, face="bold"),
-             legend.position = "bottom") 
+             legend.position = "bottom",
+             legend.box.background = element_rect(color="lightgreen", size=2)) 
        
    })
    
