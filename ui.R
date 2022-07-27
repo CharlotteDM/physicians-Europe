@@ -160,7 +160,7 @@ server <- function (input, output) {
                         lat = ~lat, 
                         lng = ~long, 
                         color = '#61D04F',
-                        label = ~paste("Specialization:", spec, "<br>",
+                        popup = ~paste("Specialization:", spec, "<br>",
                                        "Number of physicians:", number, "<br>",
                                        "Country: ", Country,"<br>",
                                        "Year:", year),
@@ -206,10 +206,10 @@ server <- function (input, output) {
             subtitle = input$year,
             y ="Number of physicians") +
        theme_light() +
-       theme(plot.title = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
-             plot.subtitle = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
-             axis.title.x = element_text(color="royalblue4", size=14, face="bold"),
-             axis.title.y = element_text(color="royalblue4", size=14, face="bold"),
+       theme(plot.title = element_text(color="hotpink3", size=14, face="bold", hjust = 0.5),
+             plot.subtitle = element_text(color="hotpink3", size=14, face="bold", hjust = 0.5),
+             axis.title.x = element_text(color="hotpink3", size=14, face="bold"),
+             axis.title.y = element_text(color="hotpink3", size=14, face="bold"),
              legend.position = "bottom",
              legend.box.background = element_rect(color="lightgreen", size=2)) 
        
