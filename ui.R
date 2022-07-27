@@ -165,7 +165,7 @@ server <- function (input, output) {
                                        "Country: ", Country, 
                                        "Year:", year),
                         labelOptions = labelOptions(style = list(
-                                                      "color" = "navy",
+                                                      "color" = "forestgreen",
                                                       "font-family" = "serif",
                                                       "font-style" = "italic",
                                                       "font-size" = "12px")),
