@@ -106,8 +106,7 @@ new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 
 #application interface
 ui <- fluidPage(
-  #fluidRow(column(2, "sidebar"), column(10, "main")),
-  titlePanel(p("Physicians by medical specialization 1985-2020 in Europe")),
+  titlePanel(h1(strong("Physicians by medical specialization 1985-2020 in Europe"))),
   theme = bs_theme(version = 4, bootswatch = "minty"),
   sidebarLayout(
     sidebarPanel(
@@ -149,12 +148,7 @@ server <- function (input, output) {
             phys_data$year == input$year) 
    })
    
-     # label_leaflet <- paste0("<b>Specialization: </b>",filteredData$spec,"<br/>",
-     #                         "<b>Number of physicians: </b>",filteredData$number,"<br/>",
-     #                         "<b>Country: </b>",filteredData$Country)
-   # 
-   # class(label_leaflet)
-   # as.vector(label_leaflet)
+
  
    #map
    output$phys_map <- renderLeaflet({
@@ -166,7 +160,7 @@ server <- function (input, output) {
                         lat = ~lat, 
                         lng = ~long, 
                         color = '#61D04F',
-                        popup = ~paste("Specialization:", spec, "<br>",
+                        label = ~paste("Specialization:", spec, "<br>",
                                        "Number of physicians:", number, "<br>",
                                        "Country: ", Country,"<br>",
                                        "Year:", year),
@@ -182,9 +176,12 @@ server <- function (input, output) {
    })
 
    #chart
-   phys_data$Country<- reorder(phys_data$Country, -phys_data$number)
+   phys_data$Country <- reorder(phys_data$Country, -phys_data$number)
+  
    
    output$phys_chart <- renderPlot({
+     
+     req(input$spec, input$year)
      ggplot(data=filteredData(), aes_string(x= "Country", y = "number", fill = "Country"))   +
        geom_bar(stat="identity") +
        geom_label(aes(label = number), alpha = 0.5, show.legend = FALSE) +
