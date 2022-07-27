@@ -159,6 +159,7 @@ server <- function (input, output) {
        addCircleMarkers(data = filteredData(),
                         lat = ~lat, 
                         lng = ~long, 
+                        color = '#61D04F',
                         label = ~paste("Specialization:", spec,
                                        "Number of physicians:", number, 
                                        "Country: ", Country, 
@@ -168,7 +169,7 @@ server <- function (input, output) {
                                                       "font-family" = "serif",
                                                       "font-style" = "italic",
                                                       "font-size" = "12px")),
-                        fillOpacity = .7,
+                        fillOpacity = .8,
                       
                         radius = 8,
                         stroke = F)
