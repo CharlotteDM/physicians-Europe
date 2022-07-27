@@ -106,7 +106,7 @@ new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 
 #application interface
 ui <- fluidPage(
-  titlePanel(h1(strong("Physicians by medical specialization 1985-2020 in Europe"))),
+  titlePanel(h1(strong("Physicians by medical specialization 2011-2020 in Europe"))),
   theme = bs_theme(version = 4, bootswatch = "minty"),
   sidebarLayout(
     sidebarPanel(
