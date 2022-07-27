@@ -149,6 +149,12 @@ server <- function (input, output) {
             phys_data$year == input$year) 
    })
    
+     # label_leaflet <- paste0("<b>Specialization: </b>",filteredData$spec,"<br/>",
+     #                         "<b>Number of physicians: </b>",filteredData$number,"<br/>",
+     #                         "<b>Country: </b>",filteredData$Country)
+   # 
+   # class(label_leaflet)
+   # as.vector(label_leaflet)
  
    #map
    output$phys_map <- renderLeaflet({
@@ -160,9 +166,9 @@ server <- function (input, output) {
                         lat = ~lat, 
                         lng = ~long, 
                         color = '#61D04F',
-                        label = ~paste("Specialization:", spec,
-                                       "Number of physicians:", number, 
-                                       "Country: ", Country, 
+                        popup = ~paste("Specialization:", spec, "<br>",
+                                       "Number of physicians:", number,
+                                       "Country: ", Country,
                                        "Year:", year),
                         labelOptions = labelOptions(style = list(
                                                       "color" = "forestgreen",
@@ -176,6 +182,8 @@ server <- function (input, output) {
    })
 
    #chart
+  
+   
    output$phys_chart <- renderPlot({
      ggplot(data=filteredData(), aes_string(x= "Country", y = "number", fill = "Country"))   +
        geom_bar(stat="identity") +
