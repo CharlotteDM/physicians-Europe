@@ -128,7 +128,7 @@ ui <- fluidPage(
           strong("For more information go to the section:"),
           tabsetPanel(
           tabPanel("Map", leafletOutput("phys_map")),
-          tabPanel("Chart", plotOutput("phys_chart")),
+          tabPanel("Chart", plotOutput("phys_chart", height = 500)),
           tabPanel("Table", DT::dataTableOutput("phys_table")))
       )
   )
