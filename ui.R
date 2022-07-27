@@ -145,10 +145,7 @@ server <- function (input, output, session) {
    filteredData <- reactive({ 
      req(input$spec)
      req(input$year)
-     
-     # validate(need(input$spec, message = FALSE))
-     # validate(need(input$year, message = FALSE))
-              
+             
      filter(phys_data, phys_data$spec == input$spec, 
             phys_data$year == input$year) 
    })
@@ -221,7 +218,8 @@ server <- function (input, output, session) {
    output$phys_chart <- renderPlot({
      
      req(input$spec, input$year)
-     ggplot(data=filteredData(), aes_string(x= "Country", y = "number", fill = "Country"))   +
+     ggplot(data=filteredData(), aes(x = reorder(Country, desc(number)), y = number, fill = Country)) +
+     # ggplot(data=filteredData(), aes_string(x= "Country", y = "number", fill = "Country"))   +
        geom_bar(stat="identity") +
        geom_label(aes(label = number), alpha = 0.5, show.legend = FALSE) +
        coord_flip() +
