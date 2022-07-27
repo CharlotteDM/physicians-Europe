@@ -107,7 +107,7 @@ new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 #application interface
 ui <- fluidPage(
   #fluidRow(column(2, "sidebar"), column(10, "main")),
-  titlePanel(p("Physicians by medical specialization 1985-2020 in EU")),
+  titlePanel(p("Physicians by medical specialization 1985-2020 in Europe")),
   theme = bs_theme(version = 4, bootswatch = "minty"),
   sidebarLayout(
     sidebarPanel(
@@ -128,7 +128,7 @@ ui <- fluidPage(
           strong("For more information go to the section:"),
           tabsetPanel(
           tabPanel("Map", leafletOutput("phys_map")),
-          tabPanel("Chart", plotOutput("phys_chart", height = 500)),
+          tabPanel("Chart", plotOutput("phys_chart", height = 500, width = 800)),
           tabPanel("Table", DT::dataTableOutput("phys_table")))
       )
   )
@@ -188,7 +188,8 @@ server <- function (input, output) {
        theme(plot.title = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
              plot.subtitle = element_text(color="royalblue4", size=14, face="bold", hjust = 0.5),
              axis.title.x = element_text(color="royalblue4", size=14, face="bold"),
-             axis.title.y = element_text(color="royalblue4", size=14, face="bold")) 
+             axis.title.y = element_text(color="royalblue4", size=14, face="bold"),
+             legend.position = "bottom") 
        
    })
    
