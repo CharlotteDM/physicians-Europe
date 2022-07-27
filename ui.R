@@ -119,7 +119,7 @@ ui <- fluidPage(
       selectInput(
         inputId = "year",
         label = "Year:",
-        choices = 1985:2020,
+        choices = unique(phys_data$year),
         selected = 2020)
       ),
   mainPanel(
@@ -133,13 +133,18 @@ ui <- fluidPage(
   )
 )
 
+
 #code
-server <- function (input, output) {
+server <- function (input, output, session) {
+  
+  observe({
+    updateSelectInput(session, "year", choices = as.character(phys_data[phys_data$spec==input$spec, "year"]))
+  })
 
    #filtered_data
    filteredData <- reactive({ 
-     # req(input$spec != 0)
-     # req(input$year != 0)
+     req(input$spec)
+     req(input$year)
      
      # validate(need(input$spec, message = FALSE))
      # validate(need(input$year, message = FALSE))
@@ -194,6 +199,24 @@ server <- function (input, output) {
    # ordered_data <- phys_data %>%
    #   dplyr::group_by(Country, spec) %>%
    #   dplyr::arrange(-number)
+   
+   
+   ##4rd attempt
+   # data_chart <- reactive({
+   #   plot_data <- phys_data %>% 
+   #     filter(spec %in% input$spec) 
+   #   plot_data$Country <- factor(plot_data$Country, 
+   #                                  levels = plot_data$Country[ order(plot_data[[input$year]])])
+   #   return(plot_data) # so it returns the data frame and not only the column  plot_data$ID_Polymer
+   # })
+   
+   ##5th attempt
+   # new_filtered_for_plot <- reactive({filteredData() %>%
+   #   dplyr::group_by(Country, spec) %>%
+   #   # # dplyr::arrange(-number)%>%
+   #   # dplyr::summarise(num = n())
+   #     })
+   
    
    output$phys_chart <- renderPlot({
      
