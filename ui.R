@@ -167,10 +167,10 @@ server <- function (input, output) {
                         lng = ~long, 
                         color = '#61D04F',
                         popup = ~paste("Specialization:", spec, "<br>",
-                                       "Number of physicians:", number,
-                                       "Country: ", Country,
+                                       "Number of physicians:", number, "<br>",
+                                       "Country: ", Country,"<br>",
                                        "Year:", year),
-                        labelOptions = labelOptions(style = list(
+                        popupOptions = popupOptions(style = list(
                                                       "color" = "forestgreen",
                                                       "font-family" = "serif",
                                                       "font-style" = "italic",
@@ -182,14 +182,13 @@ server <- function (input, output) {
    })
 
    #chart
-  
+   phys_data$Country<- reorder(phys_data$Country, -phys_data$number)
    
    output$phys_chart <- renderPlot({
      ggplot(data=filteredData(), aes_string(x= "Country", y = "number", fill = "Country"))   +
        geom_bar(stat="identity") +
        geom_label(aes(label = number), alpha = 0.5, show.legend = FALSE) +
        coord_flip() +
-       
        labs(title=input$spec, 
             subtitle = input$year,
             y ="Number of physicians") +
