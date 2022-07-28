@@ -144,9 +144,7 @@ server <- function (input, output, session) {
             phys_data$year == input$year) 
    })
    
-   #symbol on leaflet - definition
-   # symbols <- makeIcon (values = number)
- 
+
    #map
    output$phys_map <- renderLeaflet({
      leaflet() %>%
