@@ -32,7 +32,6 @@ setwd(path)
 physEurope <- read.csv("Data/physicians.csv", stringsAsFactors = F)
 #source of data: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_3129096/default/table?lang=en
 
-
 long_lat <- read.csv("Data/long_lat.csv", stringsAsFactors = F)
 #source of data: https://gist.github.com/metal3d/5b925077e66194551df949de64e910f6
 
@@ -100,8 +99,8 @@ phys_data <- na.omit(phys_data)
 # pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 #pal_phys <- colorRampPalette(brewer.pal(9,"YlOrRd"))
 
-
-
+#new data frame for output
+new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 
 
 #application interface
@@ -109,6 +108,7 @@ phys_data <- na.omit(phys_data)
 ui <- fluidPage(
   titlePanel(h1(strong("Physicians by medical specialization 2011-2020 in Europe"))),
   h4("Analyzes based on data from:"),
+  h6("https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_3129096/default/table?lang=en "),
   theme = bs_theme(version = 4, bootswatch = "minty"),
   sidebarLayout(
     sidebarPanel(
