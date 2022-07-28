@@ -99,8 +99,10 @@ new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 
 ui <- fluidPage(
   titlePanel(h1(strong("Physicians by medical specialization in 2011-2020 in Europe"))),
-  h4(em("Analyzes based on data from:")),
-  h6(code("https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_3129096/default/table?lang=en ")),
+  p(
+    em("Analyzes based on data from:"), 
+    a("Link to Eurostat data.", href="https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_3129096/default/table?lang=en "),
+    ),
   theme = bs_theme(version = 4, bootswatch = "minty"),
   sidebarLayout(
     sidebarPanel(
