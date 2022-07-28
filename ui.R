@@ -210,7 +210,7 @@ server <- function (input, output, session) {
 }
 
 
-shinyApp(ui, server, options = list(height = 800))
+shinyApp(ui, server, options = list(height = 900))
 
 
 
