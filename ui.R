@@ -180,41 +180,6 @@ server <- function (input, output, session) {
    #chart
    phys_data$Country <- reorder(phys_data$Country, -phys_data$number)
    
-   #1st attempt
-   # variables <- c("Country", "spec")
-   # filtered_data_ordered <- phys_data %>%
-   #   dplyr::group_by_at(variables) %>%
-   #   dplyr::arrange(-number)
-   
-   ##2nd attempt
-   # filtered_data_ordered <- phys_data %>%
-   #   dplyr::group_by(spec) %>%
-   #   dplyr::group_by(Country) %>%
-   #   dplyr::arrange(-number)
-   
-   ##3rd attempt
-   # ordered_data <- phys_data %>%
-   #   dplyr::group_by(Country, spec) %>%
-   #   dplyr::arrange(-number)
-   
-   
-   ##4rd attempt
-   # data_chart <- reactive({
-   #   plot_data <- phys_data %>% 
-   #     filter(spec %in% input$spec) 
-   #   plot_data$Country <- factor(plot_data$Country, 
-   #                                  levels = plot_data$Country[ order(plot_data[[input$year]])])
-   #   return(plot_data) # so it returns the data frame and not only the column  plot_data$ID_Polymer
-   # })
-   
-   ##5th attempt
-   # new_filtered_for_plot <- reactive({filteredData() %>%
-   #   dplyr::group_by(Country, spec) %>%
-   #   # # dplyr::arrange(-number)%>%
-   #   # dplyr::summarise(num = n())
-   #     })
-   
-   
    output$phys_chart <- renderPlot({
      
      req(input$spec, input$year)
