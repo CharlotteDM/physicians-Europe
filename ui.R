@@ -30,7 +30,7 @@ path <- dirname(rstudioapi::getActiveDocumentContext()$path)
 setwd(path)
 
 physEurope <- read.csv("Data/physicians.csv", stringsAsFactors = F)
-#source of data: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_2747500/default/table?lang=en
+#source of data: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_3129096/default/table?lang=en
 
 
 long_lat <- read.csv("Data/long_lat.csv", stringsAsFactors = F)
@@ -95,21 +95,20 @@ phys_data$spec[phys_data$spec == "NSP"] <- "Medical Doctors not futher defined"
 phys_data <- na.omit(phys_data)
 
 #colors
-pal_phys <- colorFactor(palette = "Set3", domain = phys_data[["spec"]])
-pal_year <- colorFactor(palette = "Spectral", domain = phys_data[["year"]])
-pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
+# pal_phys <- colorFactor(palette = "Set3", domain = phys_data[["spec"]])
+# pal_year <- colorFactor(palette = "Spectral", domain = phys_data[["year"]])
+# pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
 #pal_phys <- colorRampPalette(brewer.pal(9,"YlOrRd"))
 
 
-new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
+
 
 
 #application interface
 
 ui <- fluidPage(
   titlePanel(h1(strong("Physicians by medical specialization 2011-2020 in Europe"))),
-  h3("ddddd"),
-  
+  h4("Analyzes based on data from:"),
   theme = bs_theme(version = 4, bootswatch = "minty"),
   sidebarLayout(
     sidebarPanel(
