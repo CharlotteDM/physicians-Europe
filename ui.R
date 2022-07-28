@@ -219,18 +219,21 @@ server <- function (input, output, session) {
      
      req(input$spec, input$year)
      ggplot(data=filteredData(), aes(x = reorder(Country, desc(number)), y = number, fill = Country)) +
-     # ggplot(data=filteredData(), aes_string(x= "Country", y = "number", fill = "Country"))   +
        geom_bar(stat="identity") +
        geom_label(aes(label = number), alpha = 0.5, show.legend = FALSE) +
        coord_flip() +
        labs(title=input$spec, 
             subtitle = input$year,
             y ="Number of physicians") +
+       
        theme_light() +
        theme(plot.title = element_text(color="hotpink3", size=14, face="bold", hjust = 0.5),
              plot.subtitle = element_text(color="hotpink3", size=14, face="bold", hjust = 0.5),
              axis.title.x = element_text(color="hotpink3", size=14, face="bold"),
-             axis.title.y = element_text(color="hotpink3", size=14, face="bold"),
+             #axis.title.y = element_text(color="hotpink3", size=14, face="bold"),
+             axis.title.y=element_blank(), 
+             axis.text.y=element_blank(),
+             axis.ticks.y=element_blank(),
              legend.position = "bottom",
              legend.box.background = element_rect(color="lightgreen", size=2)) 
        
