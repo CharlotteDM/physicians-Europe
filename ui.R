@@ -105,8 +105,11 @@ new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 
 
 #application interface
+
 ui <- fluidPage(
   titlePanel(h1(strong("Physicians by medical specialization 2011-2020 in Europe"))),
+  h3("ddddd"),
+  
   theme = bs_theme(version = 4, bootswatch = "minty"),
   sidebarLayout(
     sidebarPanel(
@@ -150,7 +153,8 @@ server <- function (input, output, session) {
             phys_data$year == input$year) 
    })
    
-
+   #symbol on leaflet - definition
+   # symbols <- makeIcon (values = number)
  
    #map
    output$phys_map <- renderLeaflet({
@@ -158,23 +162,27 @@ server <- function (input, output, session) {
        addProviderTiles("Stamen.TonerLite") %>%
        setView(lng = 9.0000,
                lat = 53.0000, zoom = 3) %>%
+       # addMarkers(data = filteredData(),
+       #            lat = ~lat, 
+       #            lng = ~long, 
+       #            color = '#61D04F',
+       #            icon = symbols)
        addCircleMarkers(data = filteredData(),
-                        lat = ~lat, 
-                        lng = ~long, 
+                        lat = ~lat,
+                        lng = ~long,
                         color = '#61D04F',
                         popup = ~paste("Specialization:", spec, "<br>",
                                        "Number of physicians:", number, "<br>",
                                        "Country: ", Country,"<br>",
                                        "Year:", year),
-                        popupOptions = popupOptions(style = list(
-                                                      "color" = "forestgreen",
-                                                      "font-family" = "serif",
-                                                      "font-style" = "italic",
-                                                      "font-size" = "12px")),
-                        fillOpacity = .8,
-                      
-                        radius = 8,
-                        stroke = F)
+       popupOptions = popupOptions(style = list(
+                                     "color" = "forestgreen",
+                                     "font-family" = "serif",
+                                     "font-style" = "italic",
+                                     "font-size" = "12px")),
+       fillOpacity = .8,
+       radius = 8,
+       stroke = F)
    })
 
    #chart
@@ -195,9 +203,7 @@ server <- function (input, output, session) {
        theme(plot.title = element_text(color="hotpink3", size=14, face="bold", hjust = 0.5),
              plot.subtitle = element_text(color="hotpink3", size=14, face="bold", hjust = 0.5),
              axis.title.x = element_text(color="hotpink3", size=14, face="bold"),
-             #axis.title.y = element_text(color="hotpink3", size=14, face="bold"),
              axis.title.y=element_blank(), 
-             axis.text.y=element_blank(),
              axis.ticks.y=element_blank(),
              legend.position = "bottom",
              legend.box.background = element_rect(color="lightgreen", size=2)) 
