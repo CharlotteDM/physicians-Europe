@@ -24,8 +24,8 @@ library("leaflet.extras")
 
 
 ##uncomment to set working directory of RStudio - only for local
-path <- dirname(rstudioapi::getActiveDocumentContext()$path)
-setwd(path)
+# path <- dirname(rstudioapi::getActiveDocumentContext()$path)
+# setwd(path)
 
 physEurope <- read.csv("Data/physicians.csv", stringsAsFactors = F)
 #source of data: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_3129096/default/table?lang=en
