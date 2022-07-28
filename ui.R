@@ -153,11 +153,6 @@ server <- function (input, output, session) {
        addProviderTiles("Stamen.TonerLite") %>%
        setView(lng = 9.0000,
                lat = 53.0000, zoom = 3) %>%
-       # addMarkers(data = filteredData(),
-       #            lat = ~lat, 
-       #            lng = ~long, 
-       #            color = '#61D04F',
-       #            icon = symbols)
        addCircleMarkers(data = filteredData(),
                         lat = ~lat,
                         lng = ~long,
