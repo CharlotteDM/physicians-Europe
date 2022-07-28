@@ -8,8 +8,6 @@ library("htmlwidgets")
 library("htmltools")
 library("ggplot2")
 library("DT")
-#library("plotly")
-#library("rgdal")
 
 #install.packages("bslib")
 library("bslib")
@@ -93,12 +91,6 @@ phys_data$spec[phys_data$spec == "NSP"] <- "Medical Doctors not futher defined"
 #removes rows with NA
 phys_data <- na.omit(phys_data)
 
-#colors
-# pal_phys <- colorFactor(palette = "Set3", domain = phys_data[["spec"]])
-# pal_year <- colorFactor(palette = "Spectral", domain = phys_data[["year"]])
-# pal_country <- colorFactor(palette = "Accent", domain = phys_data[["Country"]])
-#pal_phys <- colorRampPalette(brewer.pal(9,"YlOrRd"))
-
 #new data frame for output
 new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 
@@ -106,9 +98,9 @@ new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 #application interface
 
 ui <- fluidPage(
-  titlePanel(h1(strong("Physicians by medical specialization 2011-2020 in Europe"))),
-  h4("Analyzes based on data from:"),
-  h6("https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_3129096/default/table?lang=en "),
+  titlePanel(h1(strong("Physicians by medical specialization in 2011-2020 in Europe"))),
+  h4(em("Analyzes based on data from:")),
+  h6(code("https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_3129096/default/table?lang=en ")),
   theme = bs_theme(version = 4, bootswatch = "minty"),
   sidebarLayout(
     sidebarPanel(
