@@ -161,14 +161,9 @@ server <- function (input, output, session) {
                                        "Number of physicians:", number, "<br>",
                                        "Country: ", Country,"<br>",
                                        "Year:", year),
-       popupOptions = popupOptions(style = list(
-                                     "color" = "forestgreen",
-                                     "font-family" = "serif",
-                                     "font-style" = "italic",
-                                     "font-size" = "12px")),
-       fillOpacity = .8,
-       radius = 8,
-       stroke = F)
+                        fillOpacity = .8,
+                        radius = 8,
+                        stroke = F)
    })
 
    #chart
