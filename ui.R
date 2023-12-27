@@ -1,31 +1,38 @@
+
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+
 library("tidyverse")
 library("dplyr")
 library("shiny")
 library("RColorBrewer")
 library("rstudioapi")
+install.packages("leaflet")
 library("leaflet")
 library("htmlwidgets")
 library("htmltools")
 library("ggplot2")
+install.packages("DT")
 library("DT")
+
+
 
 #install.packages("bslib")
 library("bslib")
-#install.packages("rsconnect")
+install.packages("rsconnect")
 library("rsconnect")
-#install.packages("shinyWidgets")
+install.packages("shinyWidgets")
 library("shinyWidgets")
-#install.packages("shinythemes")
+install.packages("shinythemes")
 library("shinythemes")
-#install.packages("shinydashboard")
+install.packages("shinydashboard")
 library("shinydashboard")
-#install.packages("leaflet.extras")
+install.packages("leaflet.extras")
 library("leaflet.extras")
 
 
 ##uncomment to set working directory of RStudio - only for local
-# path <- dirname(rstudioapi::getActiveDocumentContext()$path)
-# setwd(path)
+ # path <- dirname(rstudioapi::getActiveDocumentContext()$path)
+ # setwd(path)
 
 physEurope <- read.csv("Data/physicians.csv", stringsAsFactors = F)
 #source of data: https://ec.europa.eu/eurostat/databrowser/view/HLTH_RS_SPEC__custom_3129096/default/table?lang=en
