@@ -10,19 +10,21 @@ on:
 jobs:
   deploy:
     name: Deploy to shinyapps
-
+    
     # allow skipping deployment for commits containing '[automated]' or '[no-deploy]' in the commit message
     if: "!contains(github.event.head_commit.message, '[automated]') && !contains(github.event.head_commit.message, '[no-deploy]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: deploy
-        uses: BDSI-Utwente/shinyapps-deploy-github-action@v1
+        uses: DeeNA95/shinyapps-deploy-github-action@v1
         with:
+          
           # account and application name (https://<accountName>.shinyapps.io/<appName>)
           appName: physiciansEurope
           accountName: charlottedm
-          forceUpdate: TRUE
+
           # token and secret obtained from https://www.shinyapps.io/admin/#/tokens
           accountToken: ${{ secrets.SHINYAPPS_TOKEN }}
           accountSecret: ${{ secrets.SHINYAPPS_SECRET }}
+          forceUpdate: TRUE
