@@ -1,34 +1,31 @@
 
 options(repos = c(CRAN = "https://cloud.r-project.org"))
-
+#install.packages("leaflet", lib = "/Users/kdm/GitHub/physiciansEurope")
+#install.packages("leaflet, lib = Z:/ShinyApps/library/")
 library("tidyverse")
 library("dplyr")
 library("shiny")
 library("RColorBrewer")
 library("rstudioapi")
-install.packages("terra")
-install.packages("raster")
-install.packages("leaflet")
+#install.packages("leaflet")
 library("leaflet")
 library("htmlwidgets")
 library("htmltools")
 library("ggplot2")
-install.packages("DT")
+#install.packages("DT")
 library("DT")
-
-
 
 #install.packages("bslib")
 library("bslib")
-install.packages("rsconnect")
+#install.packages("rsconnect")
 library("rsconnect")
-install.packages("shinyWidgets")
+#install.packages("shinyWidgets")
 library("shinyWidgets")
-install.packages("shinythemes")
+#install.packages("shinythemes")
 library("shinythemes")
-install.packages("shinydashboard")
+#install.packages("shinydashboard")
 library("shinydashboard")
-install.packages("leaflet.extras")
+#install.packages("leaflet.extras")
 library("leaflet.extras")
 
 
