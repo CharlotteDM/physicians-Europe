@@ -1,7 +1,6 @@
 
 options(repos = c(CRAN = "https://cloud.r-project.org"))
-#install.packages("leaflet", lib = "/Users/kdm/GitHub/physiciansEurope")
-#install.packages("leaflet, lib = Z:/ShinyApps/library/")
+
 library("tidyverse")
 library("dplyr")
 library("shiny")
