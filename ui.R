@@ -96,6 +96,8 @@ phys_data$spec[phys_data$spec == "NSP"] <- "Medical Doctors not futher defined"
 #removes rows with NA
 phys_data <- na.omit(phys_data)
 
+head(phys_data)
+
 #new data frame for output
 new_phys_data <- phys_data[, c("spec", "year", "number", "Country")]
 
